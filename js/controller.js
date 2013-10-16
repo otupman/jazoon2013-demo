@@ -1,14 +1,41 @@
-function AppCtrl($scope, $location) {    
-  $scope.triggerAside = function() {
-    console.log('triggering aside');
-    Lungo.Router.aside('main', 'aside1');
-  }    
+function GetTodo($resource) {
+  return $resource('http://goldenwolf-demoapp-api.herokuapp.com/todos/:todoId');
+}
+function AppCtrl($scope, $rootScope, $resource, $route) {
+  console.log('AppCtrl: instantiated');
+  $scope.todos = [];
+  
+  
+  
+  $rootScope.$on('refreshTodos', function(event) {
+    $scope.isLoading = true;
+    $scope.todos = GetTodo($resource).query(function() {
+      $scope.isLoading = false; 
+    });
+  });
+  
+  $scope.refresh = function() {
+    $rootScope.$emit('refreshTodos')  
+  };
+  
+  $scope.refresh();
 }
 
-function DynamicCtrl($scope) {
-    $scope.message = "Hello world!";
+function AddCtrl($scope, $rootScope, $location, $resource, $routeParams) {
+  var Todo = GetTodo($resource);
+  
+  $scope.addTodo = function() {
+    var newTodo = new Todo();
+    newTodo.text = $scope.todoText;
+    newTodo.$save(function(savedTodo) {
+      $rootScope.$emit('refreshTodos');
+      $location.path('/');      
+    });
+  };
 }
 
-function DeeplinkCtrl($scope, $routeParams) {
-    $scope.paramMsg = $routeParams.msg;
+function ViewTodoCtrl($scope, $resource, $routeParams) {
+  var Todo = GetTodo($resource);
+  
+  $scope.todo = Todo.get({todoId: $routeParams.todoId});
 }

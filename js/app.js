@@ -3,12 +3,17 @@
 
 // Declare app level module which depends on filters, and services
 angular.module('JazoonDemoApp', 
-	['Centralway.lungo-angular-bridge']).
-  config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
-    $routeProvider.when('/dynamic', {templateUrl: "partials/dynamic.html", controller: "DynamicCtrl"});
-    $routeProvider.when('/deeplink/view/:msg', {templateUrl: "partials/deeplink.html", controller: "DeeplinkCtrl"});
-    $routeProvider.when('/static', {templateUrl: "partials/static.html"});
-    $routeProvider.when("/static/info", {});
+	['Centralway.lungo-angular-bridge', 'ngResource'])
+  .config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
+      $routeProvider.when('/add', {templateUrl: '/partials/add.html', controller: 'AddCtrl'});
+      $routeProvider.when('/todo/view/:todoId', {templateUrl: '/partials/view.html', controller: 'ViewTodoCtrl'});
     $routeProvider.otherwise({redirectTo: '/'});
-    $locationProvider.html5Mode(false);
-  }]);  
+    $locationProvider.html5Mode(true);
+  }])
+  .config(['$httpProvider', function($httpProvider) {
+    $httpProvider.defaults.headers.common = { 'Accept': 'application/json'};
+    $httpProvider.defaults.headers.get  = { 'Accept': 'application/json' };
+    $httpProvider.defaults.headers.post = { 'Accept': 'application/json' };
+    $httpProvider.defaults.headers.options = { 'Accept': 'application/json' };
+  }])
+;  

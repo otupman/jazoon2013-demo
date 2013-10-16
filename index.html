@@ -8,33 +8,42 @@
         <script type="text/javascript" src="components/quojs/quo.debug.js"></script>
         <script type="text/javascript" src="components/lungo/lungo.js"></script>
     </head>
-    <body class="app" lab-boot>
-        <section id="main" data-transition="slide">            
-            <header ng-controller="AppCtrl">
+    
+    <!-- lab-boot starts up Lungo & Angular via the bridge -->
+    <!-- AppCtrl is an application-wide controller -->
+    <body class="app" lab-boot ng-controller="AppCtrl"> 
+        <!-- The very first 'section' _must_ have the id 'main' -->
+        <section id="main" data-transition="slide"> 
+            <header>
                 <nav class="left">
+                    <!-- lab-aside binds the link to showing the left-menu -->
                     <a data-icon="menu" lab-aside="aside1"></a>
                 </nav>
                 <nav class="right">
-                    <a href="#/dynamic">Dynamic</a>
-                    <a href="#/static">Static</a>
-                    <a href="#/deeplink/view/demo">Deeplink</a>
+                    <a href="add">New</a>
+                    <a ng-click="refresh()">Refresh</a>
                 </nav>
+                
             </header>
-
-            <article id="main-article" class="active">
-                <h1>JazoonDemo</h1>
-                <p>Jazoon Demo</p>
+            <!-- The "first" active article _must_ have the class 'active' assigned -->
+            <article id="main-article" class="active list scroll">
+                <!-- todos is a JavaScript array; AngularJS uses the curly braces to do template-style replacement -->
+                <p>Available: {{todos.length}}</p>
+                <ul>
+                    <!-- ng-repeat repeats through an array; todo will represent each element of the array -->
+                    <li ng-repeat="todo in todos"><a href="/todo/view/{{todo.id}}">{{todo.text}}</a></li>
+                    <li ng-show="isLoading">Loading...</li>
+                </ul>
+                
             </article>
         </section>
-                
+        
         <aside id="aside1">
-            <header data-title="JazoonDemo"></header>
+            <header data-title="Todo Demo"></header>
             <article class="active list scroll">
                 <ul>
-                    <li><a href="#/dynamic"><strong>Dynamic</strong></a></li>
-                    <li><a href="#/static"><strong>Static</strong></a></li>
-                    <li><a href="#/deeplink/view/demo"><strong>Deeplink</strong></a></li>
-                </ul>
+                    <li>Item</li>
+                </ul>    
             </article>
         </aside>
                 
@@ -43,6 +52,7 @@
         <!-- If you use build.phonegap.com DO NOT add the phonegap.js to your archive -->
         <script src="phonegap.js"></script>
         <script type="text/javascript" src="components/angular/angular.js"></script>
+        <script type="text/javascript" src="components/angular-resource/angular-resource.js"></script>
         <script type="text/javascript" src="components/lungo-angular-bridge/dist/lungo-angular-bridge.js"></script>
         <!-- Our Angular app files -->
         <script type="text/javascript" src="js/app.js"></script>
