@@ -20,7 +20,7 @@
                     <a data-icon="menu" lab-aside="aside1"></a>
                 </nav>
                 <nav class="right">
-                    <a href="add">New</a>
+                    <a href="#/add">New</a>
                     <a ng-click="refresh()">Refresh</a>
                 </nav>
                 
@@ -31,7 +31,7 @@
                 <p>Available: {{todos.length}}</p>
                 <ul>
                     <!-- ng-repeat repeats through an array; todo will represent each element of the array -->
-                    <li ng-repeat="todo in todos"><a href="/todo/view/{{todo.id}}">{{todo.text}}</a></li>
+                    <li ng-repeat="todo in todos"><a href="#/todo/view/{{todo.id}}">{{todo.text}}</a></li>
                     <li ng-show="isLoading">Loading...</li>
                 </ul>
                 

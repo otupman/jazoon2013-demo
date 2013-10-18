@@ -8,7 +8,7 @@ angular.module('JazoonDemoApp',
       $routeProvider.when('/add', {templateUrl: '/partials/add.html', controller: 'AddCtrl'});
       $routeProvider.when('/todo/view/:todoId', {templateUrl: '/partials/view.html', controller: 'ViewTodoCtrl'});
     $routeProvider.otherwise({redirectTo: '/'});
-    $locationProvider.html5Mode(true);
+    $locationProvider.html5Mode(false);
   }])
   .config(['$httpProvider', function($httpProvider) {
     $httpProvider.defaults.headers.common = { 'Accept': 'application/json'};

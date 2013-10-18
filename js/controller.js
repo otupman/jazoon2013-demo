@@ -5,8 +5,6 @@ function AppCtrl($scope, $rootScope, $resource, $route) {
   console.log('AppCtrl: instantiated');
   $scope.todos = [];
   
-  
-  
   $rootScope.$on('refreshTodos', function(event) {
     $scope.isLoading = true;
     $scope.todos = GetTodo($resource).query(function() {
