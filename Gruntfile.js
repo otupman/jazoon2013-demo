@@ -37,7 +37,7 @@ module.exports = function(grunt) {
     },
     karma: {
       e2e: {
-        configFile: 'config/karma-e2e.config.js'
+        configFile: 'config/karma-e2e.conf.js'
       }
     }
   });
