@@ -34,13 +34,19 @@ module.exports = function(grunt) {
                 bases: ["./"]
             }
         }
-    } 
+    },
+    karma: {
+      e2e: {
+        configFile: 'config/karma-e2e.config.js'
+      }
+    }
   });
 
   // Load local tasks.
   grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-phonegap-build');
   grunt.loadNpmTasks('grunt-express');
+  grunt.loadNpmTasks('grunt-karma');
 
   // Default task.
   grunt.registerTask('default', ['compress', 'phonegap-build']);
