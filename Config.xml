@@ -6,7 +6,8 @@
         version   = "0.0.1">
 
     <!-- versionCode is optional and Android only -->
-
+    <!-- https://build.phonegap.com/docs/config-xml -->
+      
     <name>JazoonDemo</name>            
     <description>
         Jazoon Demo
@@ -14,4 +15,19 @@
     <author href="" email="">
         Oliver Tupman
     </author>
+      
+    <preference name="phonegap-version" value="3.0.0" />
+    <preference name="fullscreen" value="true" />
+    
+    <!-- access to resources on other domains -->
+    <access origin="*" />
+     
+    <!-- Icons and Splash --> 
+    <icon src="icon.png" />
+      
+    <!-- Android -->
+    <preference name="android-minSdkVersion" value="10" />
+      
+    <!-- iOS -->      
+      
 </widget>

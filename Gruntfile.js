@@ -3,14 +3,16 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     "phonegap-build": {
-      options: {
-        archive: "app.zip",
-        "appId": "",
-        "user": {
-          "email": "",
-          "password": ""
-        }
-      }
+      debug: {
+          options: {
+            archive: "app.zip",
+            "appId": "AddBuildID",
+            "user": {
+              "email": "user@example.com",
+              "password": "password"
+            }
+          }
+        },
     },
     compress: {
       main: {
