@@ -3,19 +3,29 @@ module.exports = function(grunt) {
   // Project configuration.
   grunt.initConfig({
     "phonegap-build": {
-      options: {
-        archive: "app.zip",
-        "appId": "",
-        "user": {
-          "email": "",
-          "password": ""
-        }
-      }
+      debug: {
+          options: {
+            archive: "app.zip",
+            "appId": "AddBuildID",
+            "user": {
+              "email": "user@example.com",
+              "password": "password"
+            }
+          }
+        },
     },
-    zip: {
-      app: {
-        src: ["index.html", "Config.xml", "components/**/*.*", "partials/*.html", "js/**/*.js"],
-        dest: "app.zip"
+    compress: {
+      main: {
+        options: {
+          archive: 'app.zip',
+          mode: 'zip'
+        },
+        files: [
+          {
+            src: ["index.html", "Config.xml", "bower_components/**/*.*", "partials/*.html", "js/**/*.js"],
+            filter: 'isFile'
+          }
+        ]
       }     
     },
     express: {
@@ -28,12 +38,11 @@ module.exports = function(grunt) {
   });
 
   // Load local tasks.
-  grunt.loadNpmTasks('grunt-zipstream');
+  grunt.loadNpmTasks('grunt-contrib-compress');
   grunt.loadNpmTasks('grunt-phonegap-build');
   grunt.loadNpmTasks('grunt-express');
 
   // Default task.
-  grunt.registerTask('default', ['zip', 'phonegap-build']);
+  grunt.registerTask('default', ['compress', 'phonegap-build']);
   grunt.registerTask('serve', ['express', 'express-keepalive']);
 };
-
