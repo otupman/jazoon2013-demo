@@ -1,8 +1,8 @@
 function GetTodo($resource) {
   return $resource('http://goldenwolf-demoapp-api.herokuapp.com/todos/:todoId');
 }
-function AppCtrl($scope, $rootScope, $resource, $route) {
-  console.log('AppCtrl: instantiated');
+
+function IndexCtrl($scope, $rootScope, $resource, $route) {
   $scope.todos = [];
   
   $rootScope.$on('refreshTodos', function(event) {
