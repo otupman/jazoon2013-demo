@@ -48,3 +48,10 @@
 * Contains a directory for each component we depend on
 * Pre-filled in this git repo for quick starting
 * Run `bower install` to update/install
+
+
+### Lungo documentation
+* Not available: unfortunately Lungo have updated recently
+* But! a good [kitchen sink demo](http://lolcathost.org/Lungo.js/kitchen-sink/#) is available
+* Look for `data-*` attributes - those are Lungo
+* Also look at [QuoJS](http://quojs.tapquo.com/) which Lungo is based on top of (jQuery-like micro DOM library)
