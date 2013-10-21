@@ -29,11 +29,22 @@
 * Defines the initial screen to be displayed
 * Defines an 'aside' (Facebook-style navbar that slides in)
 
-#### `app.js` - route central
+#### `js/app.js` - route central
 * Sets up the application
 * Defines the browser routes
 * Defines the 'default' route (like a 404)
 
 #### `partials/*` - dynamically loaded templates
-* [Templates](http://docs.angularjs.org/guide/compiler) loaded, um, dynamically via the route config (app.js)
+* [Templates](http://docs.angularjs.org/guide/dev_guide.templates) loaded, um, dynamically via the route config (app.js)
 * [Data binding](http://docs.angularjs.org/guide/dev_guide.templates.databinding) expressions like `{{todo.text}}`
+
+#### `js/controller.js` - view [controllers](http://docs.angularjs.org/guide/dev_guide.mvc.understanding_controller)
+* Embody view logic (but no DOM manipulation!)
+* Receive other services via [Dependency Injection](http://docs.angularjs.org/guide/di)
+* In our example, they make REST calls via the [$resource](http://code.angularjs.org/1.0.8/docs/api/ngResource.$resource) AngularJS service 
+
+#### `components/*` - [Bower components](https://github.com/bower/bower)
+* The LAB uses Bower to do component dependency management
+* Contains a directory for each component we depend on
+* Pre-filled in this git repo for quick starting
+* Run `bower install` to update/install
