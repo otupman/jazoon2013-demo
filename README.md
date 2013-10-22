@@ -6,6 +6,12 @@
 
 ### Setup
 
+#### Minimum required software
+
+*   git - http://git-scm.com/downloads
+*   a web server - Windows users: https://mongoose.googlecode.com/files/mongoose-tiny-4.1.exe
+*   nodejs - http://nodejs.org/
+
 #### Super quick start
 
 *   Clone [this repository](https://github.com/otupman/jazoon2013-demo).
