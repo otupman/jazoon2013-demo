@@ -22,7 +22,7 @@ module.exports = function(grunt) {
         },
         files: [
           {
-            src: ["index.html", "Config.xml", "components/**/*.*", "partials/*.html", "js/**/*.js"],
+            src: ["index.html", "config.xml", "components/**/*.*", "partials/*.html", "js/**/*.js"],
             filter: 'isFile'
           }
         ]
