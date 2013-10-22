@@ -20,9 +20,9 @@ module.exports = function(grunt) {
           archive: 'app.zip',
           mode: 'zip'
         },
-        files: [
+        files: [  
           {
-            src: ["index.html", "config.xml", "bower_components/**/*.*", "partials/*.html", "js/**/*.js"],
+            src: ["index.html", "config.xml", "components/**/*.*", "partials/*.html", "js/**/*.js"],
             filter: 'isFile'
           }
         ]
