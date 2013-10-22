@@ -12,6 +12,8 @@
 *   a web server - Windows users: https://mongoose.googlecode.com/files/mongoose-tiny-4.1.exe
 *   nodejs - http://nodejs.org/
 
+For the Windows users: tinyurl.com/cw-jazoon-downloads   
+
 #### Super quick start
 
 *   Clone [this repository](https://github.com/otupman/jazoon2013-demo).
