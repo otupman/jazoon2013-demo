@@ -4,6 +4,10 @@
 
 ## Getting started
 
+### No ideas?
+
+Our friends at mingle.io have a set of awesome APIs to draw inspiration from: https://mingle.io/explore
+
 ### Setup
 
 #### Minimum required software
