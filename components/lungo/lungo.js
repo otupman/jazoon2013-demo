@@ -1,4 +1,2787 @@
-/* lungo v2.1.0 - 2013/1/25
-   http://lungo.tapquo.com
-   Copyright (c) 2013 Tapquo S.L. - Licensed GPLv3, Commercial */
-var Lungo=Lungo||{};Lungo.VERSION="2.0",Lungo.Element||(Lungo.Element={}),Lungo.Data||(Lungo.Data={}),Lungo.Sugar||(Lungo.Sugar={}),Lungo.View||(Lungo.View={}),Lungo.Boot||(Lungo.Boot={}),Lungo.Device||(Lungo.Device={}),Lungo.ready||(Lungo.ready=Quo().ready),Lungo.Attributes={count:{selector:"*",html:'<span class="tag theme count">{{value}}</span>'},pull:{selector:"section",html:'<div class="{{value}}" data-control="pull" data-icon="down" data-loading="black">                    <strong>title</strong>                </div>'},progress:{selector:"*",html:'<div class="progress">                    <span class="bar"><span class="value" style="width:{{value}};"></span></span>                </div>'},label:{selector:"*",html:"<abbr>{{value}}</abbr>"},icon:{selector:"*",html:'<span class="icon {{value}}"></span>'},image:{selector:"*",html:'<img src="{{value}}" class="icon" />'},title:{selector:"header",html:'<span class="title centered">{{value}}</span>'},loading:{selector:"*",html:'<div class="loading {{value}}">                    <span class="top"></span>                    <span class="right"></span>                    <span class="bottom"></span>                    <span class="left"></span>                </div>'},back:{selector:"header",html:'<nav class="left"><a href="#back" data-router="section" class="left"><span class="icon {{value}}"></span></a></nav>'}},Lungo.Constants={ELEMENT:{SECTION:"section",ARTICLE:"article",ASIDE:"aside",BODY:"body",DIV:"div",LIST:"<ul></ul>",LI:"li"},QUERY:{LIST_IN_ELEMENT:"article.list, aside.list",ELEMENT_SCROLLABLE:"aside.scroll, article.scroll"},CLASS:{ACTIVE:"active",ASIDE:"aside",SHOW:"show",HIDE:"hide",HIDING:"hiding",RIGHT:"right",LEFT:"left",HORIZONTAL:"horizontal",SMALL:"small"},TRIGGER:{LOAD:"load",UNLOAD:"unload"},TRANSITION:{DURATION:350},ATTRIBUTE:{ID:"id",HREF:"href",TITLE:"title",ARTICLE:"article",CLASS:"class",WIDTH:"width",HEIGHT:"height",PIXEL:"px",PERCENT:"%",ROUTER:"router",FIRST:"first",LAST:"last",EMPTY:""},BINDING:{START:"{{",END:"}}",KEY:"value",SELECTOR:"{{value}}"},ERROR:{DATABASE:"ERROR: Connecting to Data.Sql.",DATABASE_TRANSACTION:"ERROR: Data.Sql >> ",ROUTER:"ERROR: The target does not exists >>",LOADING_RESOURCE:"ERROR: Loading resource: "}},Lungo.Core=function(e,t,n){var r=Array.prototype,i="#",s=function(t,n){e.Core.isMobile()||console[t===1?"log":t===2?"warn":"error"](n)},o=function(){var e=c(arguments),t=e.shift();l(t)==="function"&&t.apply(null,e)},u=function(e,t){return function(){return t.apply(e,c(arguments))}},a=function(){var e=e||{};for(var t=0,n=arguments.length;t<n;t++){var r=arguments[t];for(var i in r)f(r,i)&&(e[i]=r[i])}return e},f=function(e,n){return t.isOwnProperty(e,n)},l=function(e){return t.toType(e)},c=function(e){return r.slice.call(e,0)},h=function(){return t.isMobile()},p=function(){return t.environment()},d=function(e,t,n){var r=n==="desc"?-1:1;return e.sort(function(e,n){return e[t]<n[t]?-r:e[t]>n[t]?r:0})},v=function(e){var t=e.lastIndexOf(i);return t>0?e=e.substring(t):t===-1&&(e=i+e),e},m=function(e,t,n){var r=null;for(var i=0,s=e.length;i<s;i++){var o=e[i];if(o[t]==n){r=o;break}}return r};return{log:s,execute:o,bind:u,mix:a,isOwnProperty:f,toType:l,toArray:c,isMobile:h,environment:p,orderByProperty:d,parseUrl:v,findByProperty:m}}(Lungo,Quo),Lungo.dom=function(e){return $$(e)},Lungo.Events=function(e,t){var n=" ",r=function(t){for(event in t){var r=event.indexOf(n);if(r>0){var i=event.substring(0,r),s=event.substring(r+1);e.dom(s).on(i,t[event])}}};return{init:r}}(Lungo),Lungo.Fallback=function(e,t){var n=function(){env=e.Core.environment(),env.isMobile&&env.os.name==="Android"&&env.os.version<"3"?e.dom(document.body).data("position","absolute"):e.dom(document.body).data("position","fixed")};return{fixPositionInAndroid:n}}(Lungo),Lungo.init=function(e){e&&e.resources&&Lungo.Resource.load(e.resources),Lungo.Boot.Events.init(),Lungo.Boot.Data.init(),Lungo.Boot.Layout.init()},Lungo.Notification=function(e,t){var n=[],r=null,i=null,s=1,o=200,u=e.Constants.ATTRIBUTE,a=e.Constants.BINDING,f={BODY:"body",NOTIFICATION:".notification",MODAL:".notification .window",MODAL_HREF:".notification .window a",WINDOW_CLOSABLE:".notification [data-action=close], .notification > .error, .notification > .success",CONFIRM_BUTTONS:".notification .confirm a.button"},l={MODAL:"modal",VISIBLE:"visible",SHOW:"show",WORKING:"working",INPUT:"input"},c="Lungo.Notification.hide()",h='<div class="notification"><div class="window"></div></div>',p=function(n,r,i,s){var o;if(n!==t)o=x(n,null,r);else{var u=e.Attributes.loading.html;o=u.replace(a.START+a.KEY+a.END,"icon white")}E(o,"growl"),S(i,s)},d=function(){i.removeClass("show"),setTimeout(function(){r.style("display","none").removeClass("html").removeClass("confirm").removeClass("notify").removeClass("growl")},o-50)},v=function(e){n=e;var t=x(e.title,e.description,e.icon);t+=T(e.accept,"accept"),t+=T(e.cancel,"cancel"),E(t,"confirm")},m=function(e,t,n,r,i){y(e,t,n,"success",r,i)},g=function(e,t,n,r,i){y(e,t,n,"error",r,i)},y=function(e,t,n,r,i,s){E(x(e,t,n),r),i&&S(i,s)},b=function(e,t){e+=t?'<a href="#" class="button large anchor" data-action="close">'+t+"</a>":"",E(e,"html")},w=function(){e.dom(f.BODY).append(h),r=e.dom(f.NOTIFICATION),i=r.children(".window"),N()},E=function(e,t){r.show(),i.removeClass(l.SHOW),i.removeClass("error").removeClass("success").removeClass("html").removeClass("growl"),i.addClass(t),i.html(e),setTimeout(function(){i.addClass(l.SHOW)},s)},S=function(e,n){if(e!==t&&e!==0){var r=e*1e3;setTimeout(function(){d(),n&&setTimeout(n,o)},r)}},x=function(e,t,n){return t=t?t:"&nbsp;",'<span class="icon '+n+'"></span><strong class="text bold">'+e+"</strong><small>"+t+"</small>"},T=function(e,t){return'<a href="#" data-callback="'+t+'" class="button anchor large text thin">'+e.label+"</a>"},N=function(){e.dom(f.CONFIRM_BUTTONS).tap(function(t){var r=e.dom(this),i=n[r.data("callback")].callback;i&&i.call(i),d()}),e.dom(f.WINDOW_CLOSABLE).tap(d)};return w(),{show:p,hide:d,error:g,success:m,confirm:v,html:b}}(Lungo),Lungo.Resource=function(e,t,n){var r=e.Constants.ELEMENT,i=e.Constants.ERROR,s=function(t){if(e.Core.toType(t)==="array")for(var n=0,r=t.length;n<r;n++)o(t[n]);else o(t)},o=function(t){try{var n=u(t);a(n)}catch(r){e.Core.log(3,r.message)}},u=function(e){return t.ajax({url:e,async:!1,dataType:"html",error:function(){console.error(i.LOADING_RESOURCE+e)}})},a=function(t){e.Core.toType(t)==="string"&&e.dom(r.BODY).append(t)};return{load:s}}(Lungo,Quo),function(e,t){var n=e.document,r=n.documentElement,i="scroll-enabled",s="ontouchmove"in n,o="WebkitOverflowScrolling"in r.style||!s&&e.screen.width>1200||function(){var t=e.navigator.userAgent,n=t.match(/AppleWebKit\/([0-9]+)/),r=n&&n[1],i=n&&r>=534;return t.match(/Android ([0-9]+)/)&&RegExp.$1>=3&&i||t.match(/ Version\/([0-9]+)/)&&RegExp.$1>=0&&e.blackberry&&i||t.indexOf(/PlayBook/)>-1&&RegExp.$1>=0&&i||t.match(/Fennec\/([0-9]+)/)&&RegExp.$1>=4||t.match(/wOSBrowser\/([0-9]+)/)&&RegExp.$1>=233&&i||t.match(/NokiaBrowser\/([0-9\.]+)/)&&parseFloat(RegExp.$1)===7.3&&n&&r>=533}(),u=function(e,t,n,r){return n*((e=e/r-1)*e*e+1)+t},a=!1,f,l=function(n,r){var i=0,s=n.scrollLeft,o=n.scrollTop,u={top:"+0",left:"+0",duration:100,easing:e.overthrow.easing},a,l;if(r)for(var c in u)r[c]!==t&&(u[c]=r[c]);return typeof u.left=="string"?(u.left=parseFloat(u.left),a=u.left+s):(a=u.left,u.left=u.left-s),typeof u.top=="string"?(u.top=parseFloat(u.top),l=u.top+o):(l=u.top,u.top=u.top-o),f=setInterval(function(){i++<u.duration?(n.scrollLeft=u.easing(i,s,u.left,u.duration),n.scrollTop=u.easing(i,o,u.top,u.duration)):(a!==n.scrollLeft&&(n.scrollLeft=a),l!==n.scrollTop&&(n.scrollTop=l),h())},1),{top:l,left:a,duration:u.duration,easing:u.easing}},c=function(e,t){return!t&&e.className&&e.className.indexOf("scroll")>-1&&e||c(e.parentNode)},h=function(){clearInterval(f)},p=function(){if(a)return;a=!0;if(o||s)r.className+=" "+i;e.overthrow.forget=function(){r.className=r.className.replace(i,""),n.removeEventListener&&n.removeEventListener("touchstart",T,!1),e.overthrow.easing=u,a=!1};if(o||!s)return;var f,p=[],d=[],v,m,g=function(){p=[],v=null},y=function(){d=[],m=null},b=function(){var e=(p[0]-p[p.length-1])*8,t=(d[0]-d[d.length-1])*8,n=Math.max(Math.abs(t),Math.abs(e))/8;e=(e>0?"+":"")+e,t=(t>0?"+":"")+t,!isNaN(n)&&n>0&&(Math.abs(t)>80||Math.abs(e)>80)&&l(f,{left:t,top:e,duration:n})},E,S=function(e){E=f.querySelectorAll("textarea, input");for(var t=0,n=E.length;t<n;t++)E[t].style.pointerEvents=e},x=function(e,r){if(n.createEvent){var i=(!r||r===t)&&f.parentNode||f.touchchild||f,s;i!==f&&(s=n.createEvent("HTMLEvents"),s.initEvent("touchend",!0,!0),f.dispatchEvent(s),i.touchchild=f,f=i,i.dispatchEvent(e))}},T=function(e){h(),g(),y(),f=c(e.target);if(!f||f===r||e.touches.length>1)return;S("none");var t=e,n=f.scrollTop,i=f.scrollLeft,s=f.offsetHeight,o=f.offsetWidth,u=e.touches[0].pageY,a=e.touches[0].pageX,l=f.scrollHeight,w=f.scrollWidth,E=function(e){var r=n+u-e.touches[0].pageY,c=i+a-e.touches[0].pageX,h=r>=(p.length?p[0]:0),b=c>=(d.length?d[0]:0);r>0&&r<l-s||c>0&&c<w-o?e.preventDefault():x(t),v&&h!==v&&g(),m&&b!==m&&y(),v=h,m=b,f.scrollTop=r,f.scrollLeft=c,p.unshift(r),d.unshift(c),p.length>3&&p.pop(),d.length>3&&d.pop()},T=function(e){b(),S("auto"),setTimeout(function(){S("none")},450),f.removeEventListener("touchmove",E,!1),f.removeEventListener("touchend",T,!1)};f.addEventListener("touchmove",E,!1),f.addEventListener("touchend",T,!1)};n.addEventListener("touchstart",T,!1)};e.overthrow={set:p,forget:function(){},easing:u,toss:l,intercept:h,closest:c,support:o?"native":s&&"polyfilled"||"none"},p()}(this),Lungo.Service=function(e,t,n){var r="lungojs_service_cache",i={MINUTE:"minute",HOUR:"hour",DAY:"day"},s=function(e,n,r,i){return t.get(e,n,r,i)},o=function(e,n,r,i){return t.post(e,n,r,i)},u=function(e,n,r){return t.json(e,n,r)},a=function(n,r,i,s,o){var u=n+t.serializeParameters(r);if(!f(u,i))return t.get(n,r,function(e){p(u,e),s.call(s,e)},o);var a=e.Data.Storage.persistent(u);if(a)return s.call(s,a)},f=function(t,n){var i=!1,s=e.Data.Storage.persistent(r);if(s){var o=l(s[t]);i=c(o,n)}return i},l=function(e){var t=(new Date).getTime(),n=(new Date(e)).getTime();return t-n},c=function(e,t){var n=t.split(" "),r=h(n[1],e);return r<n[0]?!0:!1},h=function(e,t){var n=t/1e3/60;return e.indexOf(i.HOUR)>=0?n/=60:e.indexOf(i.DAY)>=0&&(n=n/60/24),n},p=function(t,n){var i=e.Data.Storage.persistent(r)||{};i[t]=new Date,e.Data.Storage.persistent(r,i),e.Data.Storage.persistent(t,n)};return{get:s,post:o,json:u,cache:a,Settings:t.ajaxSettings}}(Lungo,Quo),Lungo.Boot.Data=function(e,t){var n=e.Constants.BINDING,r=function(t){var n=e.dom(t||document.body);n.length>0&&i(n)},i=function(t){for(var n in e.Attributes)e.Core.isOwnProperty(e.Attributes,n)&&s(t,n)},s=function(t,n){attribute=e.Attributes[n];var r=attribute.selector+"[data-"+n+"]";t.find(r).each(function(t,r){var i=e.dom(r);o(i,i.data(n),attribute.html)})},o=function(e,t,r){var i=r.replace(n.START+n.KEY+n.END,t);e.prepend(i)};return{init:r}}(Lungo),Lungo.Boot.Events=function(e,t){var n=e.Constants.ATTRIBUTE,r=e.Constants.CLASS,i=e.Constants.ELEMENT,s={HREF_ASIDE:"header a[href][data-router=aside]",HREF_TARGET:"a[href][data-router]",HREF_TARGET_FROM_ASIDE:"aside a[href][data-router]",INPUT_CHECKBOX:"input[type=range].checkbox"},o=function(){e.dom(s.HREF_TARGET_FROM_ASIDE).tap(a),e.dom(s.HREF_TARGET).tap(u),e.dom(s.INPUT_CHECKBOX).tap(f),e.View.Aside.suscribeEvents(e.dom(s.HREF_ASIDE))},u=function(t){t.preventDefault();var n=e.dom(this);n.data("async")?c(n):l(n)},a=function(t){t.preventDefault(),e.View.Aside.hide()},f=function(t){t.preventDefault();var n=e.dom(this),r=n.val()>0?0:1;n.toggleClass("active").attr("value",r)},l=function(e){var t=e.data(n.ROUTER);switch(t){case i.SECTION:var r=e.attr(n.HREF);h(r);break;case i.ARTICLE:p(e);break;case i.ASIDE:d(e)}},c=function(t){e.Notification.show(),e.Resource.load(t.data("async")),t[0].removeAttribute("data-async"),e.Boot.Data.init(t.attr(n.HREF)),setTimeout(function(){l(t),e.Notification.hide()},e.Constants.TRANSITION.DURATION*2)},h=function(t){t=e.Core.parseUrl(t),t==="#back"?e.Router.back():e.Router.section(t)},p=function(t){var r=e.Router.History.current(),i=t.attr(n.HREF);e.Router.article(r,i,t)},d=function(t){var r=e.Router.History.current(),i=t.attr(n.HREF);e.Router.aside(r,i)};return{init:o}}(Lungo),Lungo.Boot.Layout=function(e,t){var n=e.Constants.ELEMENT,r=e.Constants.CLASS,i=e.Constants.ATTRIBUTE,s=e.Constants.QUERY,o=function(){e.Fallback.fixPositionInAndroid(),u(),a(s.LIST_IN_ELEMENT,f),a(s.ELEMENT_SCROLLABLE,l)},u=function(){var t=e.dom(n.SECTION).first().addClass(r.SHOW);e.Element.Cache.section=t,e.Element.Cache.article=t.children(n.ARTICLE+"."+r.ACTIVE),e.View.Article.switchReferenceItems(e.Element.Cache.article.attr("id"),t);var s="#"+t.attr(i.ID);e.Router.History.add(s)},a=function(t,n){var r=e.dom(t);for(var i=0,s=r.length;i<s;i++){var o=e.dom(r[i]);e.Core.execute(n,o)}},f=function(e){if(e.children().length===0){var t=e.attr(i.ID);e.append(n.LIST)}},l=function(e){e[0].addEventListener("touchstart",function(e){scrollTop=this.scrollTop,scrollTop<=1&&(this.scrollTop=1),scrollTop+this.offsetHeight>=this.scrollHeight&&(this.scrollTop=this.scrollHeight-this.offsetHeight-1)},!1)};return{init:o}}(Lungo),Lungo.Data.Cache=function(e,t){var n={},r=function(t,r){o(t)?n[t]=e.Core.mix(i(t),r):n[t]=r},i=function(e,r){return arguments.length===1?n[e]:n[arguments[0]]?n[arguments[0]][arguments[1]]:t},s=function(e,t){arguments.length===1?delete n[e]:delete n[arguments[0]][arguments[1]]},o=function(e){return n[e]?!0:!1};return{set:r,get:i,remove:s,exists:o}}(Lungo),Lungo.Data.Sql=function(e,t){var n=e.Constants.ERROR,r={name:"lungo_db",version:"1.0",size:65536,schema:[]},i=null,s=function(t){r=e.Core.mix(r,t),i=openDatabase(r.name,r.version,r.name,r.size);if(!i)throw new Error(n.DATABASE);c()},o=function(e,t,n){var r=t?" WHERE "+v(t,"AND"):"";l("SELECT * FROM "+e+r,function(e){var t=[];for(var r=0,i=e.rows.length;r<i;r++)t.push(e.rows.item(r));m(n,t)})},u=function(t,n,r){if(e.Core.toType(n)==="object")g(t,n);else for(row in n)g(t,n[row])},a=function(e,t,n,r){var i="UPDATE "+e+" SET "+v(t,",");n&&(i+=" WHERE "+v(n,"AND")),l(i)},f=function(e,t,n){var r=t?" WHERE "+v(t,"AND"):"";l("DELETE FROM "+e+r+";")},l=function(t,n){e.Core.log(1,"lng.Data.Sql >> "+t),i.transaction(function(e){e.executeSql(t,[],function(e,t){m(n,t)},function(e,n){e.executedQuery=t,y.apply(null,arguments)})})},c=function(){var e=r.schema,t=e.length;if(!t)return;for(var n=0;n<t;n++){var i=e[n];p(i),h(i.name,i.fields)}},h=function(t,n){var r="";for(var i in n)e.Core.isOwnProperty(n,i)&&(r&&(r+=", "),r+=i+" "+n[i]);l("CREATE TABLE IF NOT EXISTS "+t+" ("+r+");")},p=function(e){e.drop===!0&&d(e.name)},d=function(e){l("DROP TABLE IF EXISTS "+e)},v=function(t,n){var r="";for(var i in t)if(e.Core.isOwnProperty(t,i)){var s=t[i];r&&(r+=" "+n+" "),r+=i+"=",r+=isNaN(s)?'"'+s+'"':s}return r},m=function(t,n){e.Core.toType(t)==="function"&&setTimeout(t,100,n)},g=function(t,n){var r="",i="";for(var s in n)if(e.Core.isOwnProperty(n,s)){var o=n[s];r+=r?", "+s:s,i&&(i+=", "),i+=isNaN(o)||o==""?'"'+o+'"':o}l("INSERT INTO "+t+" ("+r+") VALUES ("+i+")")},y=function(e,t){throw new Error(n.DATABASE_TRANSACTION+t.code+": "+t.message+" \n Executed query: "+e.executedQuery)};return{init:s,select:o,insert:u,update:a,drop:f,execute:l}}(Lungo),Lungo.Data.Storage=function(e,t){var n={PERSISTENT:"localStorage",SESSION:"sessionStorage"},r=function(e,t){return s(n.PERSISTENT,e,t)},i=function(e,t){return s(n.SESSION,e,t)},s=function(e,t,n){var e=window[e];if(n)o(e,t,n);else{if(n!==null)return a(e,t);u(e,t)}},o=function(e,t,n){n=JSON.stringify(n),e.setItem(t,n)},u=function(e,t){e.removeItem(t)},a=function(e,t){return value=e.getItem(t),JSON.parse(value)};return{session:i,persistent:r}}(Lungo),Lungo.Element.Cache={section:null,article:null,aside:null,navigation:null},Lungo.Element.Carousel=function(e,t){var n={index:0,speed:300,callback:t,container:e,element:e.children[0],slide:undefined,slides:[],slides_length:0,width:0,start:{},isScrolling:undefined,deltaX:0},r=function(e){n.index&&a(n.index-1,n.speed)},i=function(e){n.index<n.slides_length-1?a(n.index+1,n.speed):a(0,n.speed)},s=function(){return n.index},o=function(){u()},u=function(){n.slides=n.element.children,n.slides_length=n.slides.length;if(n.slides_length<2)return null;n.width="getBoundingClientRect"in n.container?n.container.getBoundingClientRect().width:n.container.offsetWidth;if(!n.width)return null;n.element.style.width=n.slides.length*n.width+"px";var e=n.slides.length;while(e--){var t=n.slides[e];t.style.width=n.width+"px",t.style.display="table-cell",t.style.verticalAlign="top"}a(n.index,0),n.container.style.visibility="visible"},a=function(e,t){var r=n.element.style;t==undefined&&(t=n.speed),r.webkitTransitionDuration=r.MozTransitionDuration=r.msTransitionDuration=r.OTransitionDuration=r.transitionDuration=t+"ms",r.MozTransform=r.webkitTransform="translate3d("+ -(e*n.width)+"px,0,0)",r.msTransform=r.OTransform="translateX("+ -(e*n.width)+"px)",n.index=e},f=function(){n.element.addEventListener("touchstart",l,!1),n.element.addEventListener("touchmove",c,!1),n.element.addEventListener("touchend",h,!1),n.element.addEventListener("webkitTransitionEnd",p,!1),n.element.addEventListener("msTransitionEnd",p,!1),n.element.addEventListener("oTransitionEnd",p,!1),n.element.addEventListener("transitionend",p,!1),window.addEventListener("resize",u,!1)},l=function(e){n.start={pageX:e.touches[0].pageX,pageY:e.touches[0].pageY,time:Number(new Date)},n.isScrolling=undefined,n.deltaX=0,n.element.style.MozTransitionDuration=n.element.style.webkitTransitionDuration=0,e.stopPropagation()},c=function(e){if(e.touches.length>1||e.scale&&e.scale!==1)return;n.deltaX=e.touches[0].pageX-n.start.pageX,typeof n.isScrolling=="undefined"&&(n.isScrolling=!!(n.isScrolling||Math.abs(n.deltaX)<Math.abs(e.touches[0].pageY-n.start.pageY)));if(!n.isScrolling){e.preventDefault();var t=!n.index&&n.deltaX>0||n.index==n.slides_length-1&&n.deltaX<0?Math.abs(n.deltaX)/n.width+1:1;n.deltaX=n.deltaX/t;var r=n.deltaX-n.index*n.width;n.element.style.MozTransform=n.element.style.webkitTransform="translate3d("+r+"px,0,0)",e.stopPropagation()}},h=function(e){var t=Number(new Date)-n.start.time<250&&Math.abs(n.deltaX)>20||Math.abs(n.deltaX)>n.width/2,r=!n.index&&n.deltaX>0||n.index==n.slides_length-1&&n.deltaX<0;n.isScrolling||a(n.index+(t&&!r?n.deltaX<0?1:-1:0),n.speed),e.stopPropagation()},p=function(e){n.callback&&n.callback.apply(n.callback,[n.index,n.slides[n.index]])};return u(),f(),{prev:r,next:i,position:s,refresh:o}},Lungo.Element.Carousel=function(e,t){var n={gestureStarted:!1,index:0,speed:300,callback:t,container:e,element:e.children[0],slide:undefined,slides:[],slides_length:0,width:0,start:{},isScrolling:undefined,deltaX:0},r=function(e){n.index&&a(n.index-1,n.speed)},i=function(e){var t=n.index<n.slides_length-1?n.index+1:0;a(t,n.speed)},s=function(){return n.index},o=function(){u()},u=function(){n.slides=n.element.children,n.slides_length=n.slides.length;if(n.slides_length<2)return null;n.width="getBoundingClientRect"in n.container?n.container.getBoundingClientRect().width:n.container.offsetWidth;if(!n.width)return null;n.element.style.width=n.slides.length*n.width+"px";var e=n.slides.length;while(e--){var t=n.slides[e];t.style.width=n.width+"px",t.style.display="table-cell",t.style.verticalAlign="top"}a(n.index,0),n.container.style.visibility="visible"},a=function(e,t){var r=n.element.style;t==undefined&&(t=n.speed),r.webkitTransitionDuration=r.MozTransitionDuration=r.msTransitionDuration=r.OTransitionDuration=r.transitionDuration=t+"ms",r.MozTransform=r.webkitTransform="translate3d("+ -(e*n.width)+"px,0,0)",r.msTransform=r.OTransform="translateX("+ -(e*n.width)+"px)",n.index=e},f=function(){$$(n.element).swiping(function(e){n.gestureStarted?_moveGesture(e):_startGesture(e)}),$$(n.element).swipe(l),$$(n.element).on("webkitTransitionEnd",c,!1),$$(n.element).on("msTransitionEnd",c,!1),$$(n.element).on("oTransitionEnd",c,!1),$$(n.element).on("transitionend",c,!1),$$(window).on("resize",u,!1)};_startGesture=function(e){n.start={pageX:e.currentTouch.x,pageY:e.currentTouch.y,time:Number(new Date)},n.isScrolling=undefined,n.deltaX=0,n.element.style.MozTransitionDuration=n.element.style.webkitTransitionDuration=0,typeof e.stopPropagation=="function"&&e.stopPropagation(),n.gestureStarted=!0},_moveGesture=function(e){n.deltaX=e.currentTouch.x-n.start.pageX,typeof n.isScrolling=="undefined"&&(n.isScrolling=!!(n.isScrolling||Math.abs(n.deltaX)<Math.abs(e.currentTouch.y-n.start.pageY)));if(!n.isScrolling){e.preventDefault();var t=!n.index&&n.deltaX>0||n.index==n.slides_length-1&&n.deltaX<0?Math.abs(n.deltaX)/n.width+1:1;n.deltaX=n.deltaX/t;var r=n.deltaX-n.index*n.width;n.element.style.MozTransform=n.element.style.webkitTransform="translate3d("+r+"px,0,0)",typeof e.stopPropagation=="function"&&e.stopPropagation()}};var l=function(){if(n.gestureStarted){var e=Number(new Date)-n.start.time<250&&Math.abs(n.deltaX)>20||Math.abs(n.deltaX)>n.width/2,t=!n.index&&n.deltaX>0||n.index==n.slides_length-1&&n.deltaX<0;n.isScrolling||a(n.index+(e&&!t?n.deltaX<0?1:-1:0),n.speed),typeof event.stopPropagation=="function"&&event.stopPropagation(),n.gestureStarted=!1}},c=function(e){n.callback&&n.callback.apply(n.callback,[n.index,n.slides[n.index]])};return u(),f(),{prev:r,next:i,position:s,refresh:o}},Lungo.Element.count=function(e,t){var n=Lungo.dom(e);n.children(".bubble.count").remove();if(n&&t){var r=Lungo.Constants.BINDING.SELECTOR;html=Lungo.Attributes.count.html.replace(r,t),n.append(html)}},Lungo.Element.loading=function(e,t){var n=Lungo.dom(e);if(n){var r=null;if(t){var i=Lungo.Constants.BINDING.SELECTOR;r=Lungo.Attributes.loading.html.replace(i,t)}n.html(r)}},Lungo.Element.progress=function(e,t){var n=Lungo.dom(e);n&&(t+=Lungo.Constants.ATTRIBUTE.PERCENT,n.find(".value").style(Lungo.Constants.ATTRIBUTE.WIDTH,t))},Lungo.Element.Pull=function(e,t){var n=60,r=80,i=300,s=0,o=!1,u=$$(e),a=u.siblings('div[data-control="pull"]'),f,l={onPull:"Pull down to refresh",onRelease:"Release to...",onRefresh:"Loading...",callback:undefined};f=Lungo.Core.mix(l,t);var c=function(){h(0,!0),setTimeout(function(){o=!1,document.removeEventListener("touchmove",g,!1)},i),s=0},h=function(e,t){var n=e>r?r:e;t&&u.addClass("pull"),u.style("-webkit-transform","translate(0, "+n+"px)"),t&&setTimeout(function(){u.removeClass("pull")},i)},p=function(e){o=!0,document.addEventListener("touchmove",g,!1),d(f.onRefresh),v(!0),h(n,!0),f.callback&&f.callback.apply(this)},d=function(e){a.find("strong").html(e)},v=function(e){e?a.addClass("refresh"):a.removeClass("refresh")},m=function(e){e?a.addClass("rotate"):a.removeClass("rotate")},g=function(e){e.preventDefault()},y=function(e){h(s,!1),v(!1),s>n?(d(f.onRelease),m(!0)):(d(f.onPull),m(!1))},b=function(e){s>n?p():c()};return function(){var e=!1,t={};u.bind("touchstart",function(n){u[0].scrollTop<=1&&(e=!0,t=$$.isMobile()?n.touches[0].pageY:n.pageY)}).bind("touchmove",function(n){!o&&e&&(current_y=$$.isMobile()?n.touches[0].pageY:n.pageY,s=current_y-t,s>=0&&(u.style("overflow-y","hidden"),y()))}).bind("touchend",function(){e&&(u.style("overflow-y","scroll"),b()),INI_TOUCH={},e=!1})}(),{hide:c}},Lungo.Router=function(e,t){var n=e.Constants.CLASS,r=e.Constants.ELEMENT,i=e.Constants.ERROR,s=e.Constants.TRIGGER,o=e.Constants.ATTRIBUTE,u="#",a=function(t){t=e.Core.parseUrl(t);var i=e.Element.Cache.section;if(h(t,i)){var s=i.siblings(r.SECTION+t);s.length>0&&(target_transition=s.data("transition"),target_transition&&(m(i),v(i,target_transition)),i.removeClass(n.SHOW).addClass(n.HIDE),s.removeClass(n.HIDE).addClass(n.SHOW),e.Element.Cache.section=s,e.Element.Cache.article=s.find(r.ARTICLE+"."+n.ACTIVE),e.Router.History.add(t),d(i,s))}},f=function(t,i,u){i=e.Core.parseUrl(i);var f=e.Element.Cache.article;if(h(i,f)){a(t);var l=e.Element.Cache.section.find(r.ARTICLE+i);l.length>0&&(p(f)!==p(l)&&(f=e.Element.Cache.section.children(r.ARTICLE)),f.removeClass(n.ACTIVE).trigger(s.UNLOAD),l.addClass(n.ACTIVE).trigger(s.LOAD),e.Element.Cache.article=l,e.View.Article.switchNavItems(i),e.View.Article.switchReferenceItems(i,e.Element.Cache.section),u&&e.View.Article.title(u.data(o.TITLE)))}},l=function(t,n){n=e.Core.parseUrl(n),e.View.Aside.toggle(n)},c=function(){var t=e.Element.Cache.section;t.removeClass(n.SHOW).addClass(n.HIDING),setTimeout(function(){t.removeClass(n.HIDING)},e.Constants.TRANSITION.DURATION),e.Router.History.removeLast(),target=t.siblings(r.SECTION+e.Router.History.current()),v(target,target.data("transition-origin")),target.removeClass(n.HIDE).addClass(n.SHOW),e.Element.Cache.section=target,e.Element.Cache.article=target.find(r.ARTICLE+"."+n.ACTIVE),d(t,target)},h=function(e,t){return e!==u+t.attr("id")?!0:!1},p=function(e){return e.parent("section").attr("id")},d=function(e,t){e.trigger(s.UNLOAD),t.trigger(s.LOAD)},v=function(e,t){e.data("transition",t)},m=function(e){e.data("transition-origin",e.data("transition"))};return{section:a,article:f,aside:l,back:c}}(Lungo),Lungo.Router.History=function(e){var t=[],n=function(e){e!==r()&&t.push(e)},r=function(){return t[t.length-1]},i=function(){t.length-=1};return{add:n,current:r,removeLast:i}}(),Lungo.View.Article=function(e,t){var n=e.Constants.ELEMENT,r=e.Constants.CLASS,i=e.Constants.ATTRIBUTE,s={NAVIGATION_ITEM:'a[href][data-router="article"]',REFERENCE_LINK:" a[href][data-article]",TITLE_OF_ARTICLE:"header .title, footer .title",ASIDE_REFERENCE_LIST:"li a.active, li.active"},o=function(t){t&&e.Element.Cache.section.find(s.TITLE_OF_ARTICLE).text(t)},u=function(t){e.Element.Cache.section.find(s.NAVIGATION_ITEM).removeClass(r.ACTIVE);var n='a[href="'+t+'"][data-router="article"]';e.Element.Cache.section.find(n).addClass(r.ACTIVE),e.Element.Cache.aside&&(aside=e.Element.Cache.aside,aside.find(s.ASIDE_REFERENCE_LIST).removeClass(r.ACTIVE),aside.find(n).addClass(r.ACTIVE).parent().addClass(r.ACTIVE))},a=function(e,t){var n="[data-article="+e.replace("#","")+"]";t.find(s.REFERENCE_LINK).hide().siblings(n).show()};return{title:o,switchReferenceItems:a,switchNavItems:u}}(Lungo),Lungo.View.Aside=function(e,t){var n=e.Constants.ELEMENT,r=e.Constants.CLASS,i=e.Constants.ATTRIBUTE,s=function(t){aside=f(t);if(aside){var n=aside.hasClass(r.SHOW);n?e.View.Aside.hide():e.View.Aside.show(aside)}aside=null},o=function(t){e.Core.toType(t)=="string"&&(t=f(e.Core.parseUrl(t)));if(t){e.Element.Cache.aside=t;var n=l(t);t.addClass(r.SHOW),e.Element.Cache.section.addClass(n).addClass(r.ASIDE)}t=null},u=function(t){var n=e.Element.Cache.aside||t;if(n){e.Element.Cache.section.removeClass(r.ASIDE).removeClass(r.RIGHT).removeClass(r.SMALL);var i=l(n);i&&e.Element.Cache.section.removeClass(i),setTimeout(function(){n.removeClass(r.SHOW),e.Element.Cache.aside=null},350)}},a=function(t){var n=parseInt(document.body.getBoundingClientRect().width/3,10);t.each(function(){var t=!1,i=e.dom(this),s=i.closest("section"),a=e.dom(i.attr("href"));s.swiping(function(e){if(!s.hasClass("aside")){var n=e.currentTouch.x-e.iniTouch.x,i=Math.abs(e.currentTouch.y-e.iniTouch.y);t=t?!0:n>3*i&&n<50,t?(n=n>256?256:n<0?0:n,a.addClass(r.SHOW),s.vendor("transform","translateX("+n+"px)"),s.vendor("transition-duration","0s")):s.attr("style","")}}),s.swipe(function(e){var r=e.currentTouch.x-e.iniTouch.x,i=Math.abs(e.currentTouch.y-e.iniTouch.y);s.attr("style",""),r>n&&t?o(a):u(a),t=!1})})},f=function(t){var r=null,i=e.dom(n.ASIDE);if(i.length==1){var s="#"+i[0].id;s==t&&(r=e.dom(i[0]))}else i.length>1&&(r=i.siblings(n.ASIDE+t));return r},l=function(e){var t=e.attr(i.CLASS),n="";return t&&(n+=t.indexOf(r.RIGHT)>-1?r.RIGHT+" ":"",n+=t.indexOf(r.SMALL)>-1?r.SMALL+" ":""),n};return{suscribeEvents:a,toggle:s,show:o,hide:u}}(Lungo);
+var Lungo = Lungo || {};
+
+Lungo.VERSION = '2.0';
+
+Lungo.Element || (Lungo.Element = {});
+Lungo.Data || (Lungo.Data = {});
+Lungo.Sugar || (Lungo.Sugar = {});
+Lungo.View || (Lungo.View = {});
+Lungo.Boot || (Lungo.Boot = {});
+Lungo.Device || (Lungo.Device = {});
+Lungo.ready || (Lungo.ready = Quo().ready);
+
+/**
+ * Object with data-attributes (HTML5) with a special <markup>
+ *
+ * @namespace Lungo
+ * @class Attributes
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.Attributes = {
+  count: {
+    selector: '*',
+    html: '<span class="tag theme count">{{value}}</span>'
+  },
+  pull: {
+    selector: 'section',
+    html: '<div class="{{value}}" data-control="pull" data-icon="down" data-loading="black">\
+                    <strong>title</strong>\
+                </div>'
+  },
+  progress: {
+    selector: '*',
+    html: '<div class="progress">\
+                    <span class="bar"><span class="value" style="width:{{value}};"></span></span>\
+                </div>'
+  },
+  label: {
+    selector: '*',
+    html: '<abbr>{{value}}</abbr>'
+  },
+  icon: {
+    selector: '*',
+    html: '<span class="icon {{value}}"></span>'
+  },
+  image: {
+    selector: '*',
+    html: '<img src="{{value}}" class="icon" />'
+  },
+  title: {
+    selector: 'header',
+    html: '<span class="title centered">{{value}}</span>'
+  },
+  loading: {
+    selector: '*',
+    html: '<div class="loading {{value}}">\
+                    <span class="top"></span>\
+                    <span class="right"></span>\
+                    <span class="bottom"></span>\
+                    <span class="left"></span>\
+                </div>'
+  },
+  back: {
+    selector: 'header',
+    html: '<nav class="left"><a href="#back" data-router="section" class="left"><span class="icon {{value}}"></span></a></nav>'
+  }
+};
+
+/**
+ * Object with data-attributes (HTML5) with a special <markup>
+ *
+ * @namespace Lungo
+ * @class Constants
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Constants = {
+
+  ELEMENT: {
+    SECTION: 'section',
+    ARTICLE: 'article',
+    ASIDE: 'aside',
+    BODY: 'body',
+    DIV: 'div',
+    LIST: '<ul></ul>',
+    LI: 'li'
+  },
+
+  QUERY: {
+    LIST_IN_ELEMENT: 'article.list, aside.list',
+    ELEMENT_SCROLLABLE: 'aside.scroll, article.scroll'
+  },
+
+  CLASS: {
+    ACTIVE: 'active',
+    ASIDE: 'aside',
+    SHOW: 'show',
+    HIDE: 'hide',
+    HIDING: 'hiding',
+    RIGHT: 'right',
+    LEFT: 'left',
+    HORIZONTAL: 'horizontal',
+    SMALL: 'small'
+  },
+
+  TRIGGER: {
+    LOAD: 'load',
+    UNLOAD: 'unload'
+  },
+
+  TRANSITION: {
+    DURATION: 350
+  },
+
+  ATTRIBUTE: {
+    ID: 'id',
+    HREF: 'href',
+    TITLE: 'title',
+    ARTICLE: 'article',
+    CLASS: 'class',
+    WIDTH: 'width',
+    HEIGHT: 'height',
+    PIXEL: 'px',
+    PERCENT: '%',
+    ROUTER: 'router',
+    FIRST: 'first',
+    LAST: 'last',
+    EMPTY: ''
+  },
+
+  BINDING: {
+    START: '{{',
+    END: '}}',
+    KEY: 'value',
+    SELECTOR: '{{value}}'
+  },
+
+  ERROR: {
+    DATABASE: 'ERROR: Connecting to Data.Sql.',
+    DATABASE_TRANSACTION: 'ERROR: Data.Sql >> ',
+    ROUTER: 'ERROR: The target does not exists >>',
+    LOADING_RESOURCE: 'ERROR: Loading resource: '
+  }
+
+};
+
+/**
+ * Contains all the common functions used in Lungo.
+ *
+ * @namespace Lungo
+ * @class Core
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.Core = (function(lng, $$, undefined) {
+
+  var ARRAY_PROTO = Array.prototype;
+  var HASHTAG_CHARACTER = '#';
+
+  /**
+   * Console system to display messages when you are in debug mode.
+   *
+   * @method log
+   *
+   * @param {number} Severity based in (1)Log, (2)Warn, (>2)Error
+   * @param {string} Message to show in console
+   */
+  var log = function(severity, message) {
+      if (!lng.Core.isMobile()) {
+        console[(severity === 1) ? 'log' : (severity === 2) ? 'warn' : 'error'](message);
+      } else {
+        // @todo : send to the server
+      }
+    };
+
+  /**
+   * Executes callbacks based on the parameters received.
+   *
+   * @method execute
+   *
+   * @param {Function} callback to execute
+   */
+  var execute = function() {
+      var args = toArray(arguments);
+      var callback = args.shift();
+
+      if (toType(callback) === 'function') {
+        callback.apply(null, args);
+      }
+    };
+
+  /**
+   * Creates a new function that, when called, itself calls this function in
+   * the context of the provided this value, with a given sequence of arguments
+   * preceding any provided when the new function was called.
+   *
+   * @method bind
+   *
+   * @param {object} object to which the 'this' can refer in the new function when the new function is called.
+   * @param {Function} method A function object.
+   */
+  var bind = function(object, method) {
+      return function() {
+        return method.apply(object, toArray(arguments));
+      };
+    };
+
+  /**
+   * Copy from any number of objects and mix them all into a new object.
+   * The implementation is simple; just loop through arguments and
+   * copy every property of every object passed to the function.
+   *
+   * @method mix
+   *
+   * @param {object} arguments to mix them all into a new object.
+   * @return {object} child a new object with all the objects from the arguments mixed.
+   */
+  var mix = function() {
+      var child = child || {};
+      for (var arg = 0, len = arguments.length; arg < len; arg++) {
+        var argument = arguments[arg];
+        for (var prop in argument) {
+          if (isOwnProperty(argument, prop)) {
+            child[prop] = argument[prop];
+          }
+        }
+      }
+      return child;
+    };
+
+  /**
+   * Every object descended from Object inherits the hasOwnProperty method.
+   * This method can be used to determine whether an object has the specified property
+   * as a direct property of that object.
+   *
+   * @param {object} object to test for a property's existence inside itself.
+   * @param {string} property the name of the property to test.
+   * @return {boolean} indicating whether the object has the specified property.
+   */
+  var isOwnProperty = function(object, property) {
+      return $$.isOwnProperty(object, property);
+    };
+
+  /**
+   * Determine the internal JavaScript [[Class]] of an object.
+   *
+   * @param {object} obj to get the real type of itself.
+   * @return {string} with the internal JavaScript [[Class]] of itself.
+   */
+  var toType = function(obj) {
+      return $$.toType(obj);
+    };
+
+  /**
+   * Convert an array-like object into a true JavaScript array.
+   *
+   * @param {object} obj Any object to turn into a native Array.
+   * @return {object} The object is now a plain array.
+   */
+  var toArray = function(obj) {
+      return ARRAY_PROTO.slice.call(obj, 0);
+    };
+
+  /**
+   * Determine if the current environment is a mobile environment
+   *
+   * @method isMobile
+   *
+   * @return {boolean} true if is mobile environment, false if not.
+   */
+  var isMobile = function() {
+      return $$.isMobile();
+    };
+
+  /**
+   * Returns information of execute environment
+   *
+   * @method environment
+   *
+   * @return {object} Environment information
+   */
+  var environment = function() {
+      return $$.environment();
+    };
+
+  /**
+   * Returns a ordered list of objects by a property
+   *
+   * @method orderByProperty
+   *
+   * @param {list} List of objects
+   * @param {string} Name of property
+   * @param {string} Type of order: asc (ascendent) or desc (descendent)
+   * @return {list} Ordered list
+   */
+  var orderByProperty = function(data, property, order) {
+      var order_operator = (order === 'desc') ? -1 : 1;
+
+      return data.sort(function(a, b) {
+        return (a[property] < b[property]) ? -order_operator : (a[property] > b[property]) ? order_operator : 0;
+      });
+    };
+
+  /**
+   * Returns a correct URL using hashtag character
+   *
+   * @method parseUrl
+   *
+   * @param {string} Url
+   * @return {string} Url parsed
+   */
+  var parseUrl = function(href) {
+      var href_hashtag = href.lastIndexOf(HASHTAG_CHARACTER);
+      if (href_hashtag > 0) {
+        href = href.substring(href_hashtag);
+      } else if (href_hashtag === -1) {
+        href = HASHTAG_CHARACTER + href;
+      }
+      return href;
+    };
+
+  /**
+   * Returns a Object in a list by a property value
+   *
+   * @method objectInListByProperty
+   *
+   * @param {list} List of objects
+   * @param {string} Name of property
+   * @param {var} Value for comparision
+   * @return {object} Instance of object founded (if exists)
+   */
+  var findByProperty = function(list, property, value) {
+      var search = null;
+
+      for (var i = 0, len = list.length; i < len; i++) {
+        var element = list[i];
+
+        if (element[property] == value) {
+          search = element;
+          break;
+        }
+      }
+
+      return search;
+    };
+
+  return {
+    log: log,
+    execute: execute,
+    bind: bind,
+    mix: mix,
+    isOwnProperty: isOwnProperty,
+    toType: toType,
+    toArray: toArray,
+    isMobile: isMobile,
+    environment: environment,
+    orderByProperty: orderByProperty,
+    parseUrl: parseUrl,
+    findByProperty: findByProperty
+  };
+
+})(Lungo, Quo);
+
+/**
+ * LungoJS Dom Handler
+ *
+ * @namespace Lungo
+ * @class Dom
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+/**
+ * Add an event listener
+ *
+ * @method dom
+ *
+ * @param  {string} <Markup> element selector
+ * @return {Object} QuoJS <element> instance
+ */
+Lungo.dom = function(selector) {
+  return $$(selector);
+};
+
+/**
+ * ?
+ *
+ * @namespace Lungo
+ * @class Fallback
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Events = (function(lng, undefined) {
+
+  var SPACE_CHAR = ' ';
+
+  var init = function(events) {
+      for (event in events) {
+
+        var index_of = event.indexOf(SPACE_CHAR);
+        if (index_of > 0) {
+          var event_name = event.substring(0, index_of);
+          var element = event.substring(index_of + 1);
+          lng.dom(element).on(event_name, events[event]);
+        }
+      }
+    };
+
+  return {
+    init: init
+  };
+
+})(Lungo);
+
+/**
+ * ?
+ *
+ * @namespace Lungo
+ * @class Fallback
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Fallback = (function(lng, undefined) {
+
+  var fixPositionInAndroid = function() {
+      env = lng.Core.environment();
+      if (env.isMobile && env.os.name === 'Android' && env.os.version < "3") {
+        lng.dom(document.body).data("position", "absolute");
+      } else {
+        lng.dom(document.body).data("position", "fixed");
+      }
+    };
+
+  return {
+    fixPositionInAndroid: fixPositionInAndroid
+  };
+
+})(Lungo);
+
+/**
+ * Instance initializer
+ *
+ * @namespace Lungo
+ * @class Init
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.init = function(config) {
+  if (config && config.resources) {
+    Lungo.Resource.load(config.resources);
+  }
+
+  Lungo.Boot.Events.init();
+  Lungo.Boot.Data.init();
+  Lungo.Boot.Layout.init();
+};
+
+/**
+ * Notification system in CSS3
+ *
+ * @namespace Lungo
+ * @class Notification
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Notification = (function(lng, undefined) {
+
+  var _options = [];
+  var _el = null;
+  var _window = null;
+
+  var DELAY_TIME = 1;
+  var ANIMATION_MILISECONDS = 200;
+  var ATTRIBUTE = lng.Constants.ATTRIBUTE;
+  var BINDING = lng.Constants.BINDING;
+
+  var SELECTOR = {
+    BODY: 'body',
+    NOTIFICATION: '.notification',
+    MODAL: '.notification .window',
+    MODAL_HREF: '.notification .window a',
+    WINDOW_CLOSABLE: '.notification [data-action=close], .notification > .error, .notification > .success',
+    CONFIRM_BUTTONS: '.notification .confirm a.button'
+  };
+
+  var STYLE = {
+    MODAL: 'modal',
+    VISIBLE: 'visible',
+    SHOW: 'show',
+    WORKING: 'working',
+    INPUT: 'input'
+  };
+
+  var CALLBACK_HIDE = 'Lungo.Notification.hide()';
+  var MARKUP_NOTIFICATION = '<div></div>';
+
+  /**
+   *
+   */
+  var show = function(title, icon, seconds, callback) {
+      var markup;
+      if (title !== undefined) {
+        markup = _markup(title, null, icon);
+      } else {
+        var data_loading = lng.Attributes.loading.html;
+        markup = data_loading.replace(BINDING.START + BINDING.KEY + BINDING.END, 'icon white');
+      }
+
+      _show(markup, 'growl');
+      _hide(seconds, callback);
+    };
+
+  /**
+   *
+   */
+  var hide = function() {
+      _window.removeClass('show');
+      setTimeout(function() {
+        _el.style('display', 'none').removeClass('html').removeClass('confirm').removeClass('notify').removeClass('growl');
+      }, ANIMATION_MILISECONDS - 50);
+    };
+
+  /**
+   *
+   */
+  var confirm = function(options) {
+      _options = options;
+
+      var markup = _markup(options.title, options.description, options.icon);
+      markup += _button_markup(options.accept, 'accept');
+      markup += _button_markup(options.cancel, 'cancel');
+
+      _show(markup, 'confirm');
+    };
+
+  /**
+   *
+   */
+  var success = function(title, description, icon, seconds, callback) {
+      _notify(title, description, icon, 'success', seconds, callback);
+    };
+
+  /**
+   *
+   */
+  var error = function(title, description, icon, seconds, callback) {
+      _notify(title, description, icon, 'error', seconds, callback);
+    };
+
+  /**
+   *
+   */
+  var _notify = function(title, description, icon, stylesheet, seconds, callback) {
+      _show(_markup(title, description, icon), stylesheet);
+      if (seconds) {
+        _hide(seconds, callback);
+      }
+    };
+
+  /**
+   *
+   */
+  var html = function(markup, button) {
+      markup += (button) ? '<a href="#" class="button large anchor" data-action="close">' + button + '</a>' : '';
+      _show(markup, 'html');
+    };
+
+
+  var _init = function() {
+      lng.dom(SELECTOR.BODY).append(MARKUP_NOTIFICATION);
+      _el = lng.dom(SELECTOR.NOTIFICATION);
+      _window = _el.children('.window');
+
+      _subscribeEvents();
+    };
+
+  var _show = function(html, stylesheet) {
+      _el.show();
+      _window.removeClass(STYLE.SHOW);
+      _window.removeClass('error').removeClass('success').removeClass('html').removeClass('growl');
+      _window.addClass(stylesheet);
+      _window.html(html);
+
+      setTimeout(function() {
+        _window.addClass(STYLE.SHOW);
+      }, DELAY_TIME);
+    };
+
+  var _hide = function(seconds, callback) {
+      if (seconds !== undefined && seconds !== 0) {
+        var miliseconds = seconds * 1000;
+        setTimeout(function() {
+          hide();
+          // if (callback) callback.apply(callback);
+          if (callback) setTimeout(callback, ANIMATION_MILISECONDS);
+
+        }, miliseconds);
+      }
+    };
+
+  var _markup = function(title, description, icon) {
+      description = !description ? "&nbsp;" : description;
+      return '<span class="icon ' + icon + '"></span><strong class="text bold">' + title + '</strong><small>' + description + '</small>';
+    };
+
+  var _button_markup = function(options, callback) {
+      return '<a href="#" data-callback="' + callback + '" class="button anchor large text thin">' + options.label + '</a>';
+    };
+
+  var _subscribeEvents = function() {
+      lng.dom(SELECTOR.CONFIRM_BUTTONS).tap(function(event) {
+        var button = lng.dom(this);
+        var callback = _options[button.data('callback')].callback;
+        if (callback) callback.call(callback);
+        hide();
+      });
+
+      lng.dom(SELECTOR.WINDOW_CLOSABLE).tap(hide);
+    };
+
+  _init();
+
+  return {
+    show: show,
+    hide: hide,
+    error: error,
+    success: success,
+    confirm: confirm,
+    html: html
+  };
+
+})(Lungo);
+
+/**
+ * Load Resources
+ *
+ * @namespace Lungo
+ * @class Resource
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Resource = (function(lng, $$, undefined) {
+
+  var ELEMENT = lng.Constants.ELEMENT;
+  var ERROR = lng.Constants.ERROR;
+
+  /**
+   * Start loading async sections (local & remote)
+   *
+   * @method start
+   *
+   */
+  var load = function(resource) {
+      if (lng.Core.toType(resource) === 'array') {
+        for (var i = 0, len = resource.length; i < len; i++) {
+          _load(resource[i]);
+        }
+      } else {
+        _load(resource);
+      }
+    };
+
+  /**
+   *
+   */
+  var _load = function(resource) {
+      try {
+        var response = _loadSyncResource(resource);
+        _pushResourceInBody(response);
+      } catch (error) {
+        lng.Core.log(3, error.message);
+      }
+    };
+
+  var _loadSyncResource = function(url) {
+      return $$.ajax({
+        url: url,
+        async: false,
+        dataType: 'html',
+        error: function() {
+          console.error(ERROR.LOADING_RESOURCE + url);
+        }
+      });
+    };
+
+  var _pushResourceInBody = function(section) {
+      if (lng.Core.toType(section) === 'string') {
+        lng.dom(ELEMENT.BODY).append(section);
+      }
+    };
+
+  return {
+    load: load
+  };
+
+})(Lungo, Quo);
+
+/*! Overthrow v.0.1.0. An overflow:auto polyfill for responsive design. (c) 2012: Scott Jehl, Filament Group, Inc. http://filamentgroup.github.com/Overthrow/license.txt */ (function(w, undefined) {
+
+  var doc = w.document,
+    docElem = doc.documentElement,
+    classtext = "scroll-enabled",
+
+    // Touch events are used in the polyfill, and thus are a prerequisite
+    canBeFilledWithPoly = "ontouchmove" in doc,
+
+    // The following attempts to determine whether the browser has native overflow support
+    // so we can enable it but not polyfill
+    overflowProbablyAlreadyWorks =
+    // Features-first. iOS5 overflow scrolling property check - no UA needed here. thanks Apple :)
+    "WebkitOverflowScrolling" in docElem.style ||
+    // Touch events aren't supported and screen width is greater than X
+    // ...basically, this is a loose "desktop browser" check.
+    // It may wrongly opt-in very large tablets with no touch support.
+    (!canBeFilledWithPoly && w.screen.width > 1200) ||
+    // Hang on to your hats.
+    // Whitelist some popular, overflow-supporting mobile browsers for now and the future
+    // These browsers are known to get overlow support right, but give us no way of detecting it.
+    (function() {
+      var ua = w.navigator.userAgent,
+        // Webkit crosses platforms, and the browsers on our list run at least version 534
+        webkit = ua.match(/AppleWebKit\/([0-9]+)/),
+        wkversion = webkit && webkit[1],
+        wkLte534 = webkit && wkversion >= 534;
+
+      return (
+      /* Android 3+ with webkit gte 534
+                    ~: Mozilla/5.0 (Linux; U; Android 3.0; en-us; Xoom Build/HRI39) AppleWebKit/534.13 (KHTML, like Gecko) Version/4.0 Safari/534.13 */
+      ua.match(/Android ([0-9]+)/) && RegExp.$1 >= 3 && wkLte534 ||
+      /* Blackberry 7+ with webkit gte 534
+                    ~: Mozilla/5.0 (BlackBerry; U; BlackBerry 9900; en-US) AppleWebKit/534.11+ (KHTML, like Gecko) Version/7.0.0 Mobile Safari/534.11+ */
+      ua.match(/ Version\/([0-9]+)/) && RegExp.$1 >= 0 && w.blackberry && wkLte534 ||
+      /* Blackberry Playbook with webkit gte 534
+                    ~: Mozilla/5.0 (PlayBook; U; RIM Tablet OS 1.0.0; en-US) AppleWebKit/534.8+ (KHTML, like Gecko) Version/0.0.1 Safari/534.8+ */
+      ua.indexOf(/PlayBook/) > -1 && RegExp.$1 >= 0 && wkLte534 ||
+      /* Firefox Mobile (Fennec) 4 and up
+                    ~: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:2.1.1) Gecko/ Firefox/4.0.2pre Fennec/4.0. */
+      ua.match(/Fennec\/([0-9]+)/) && RegExp.$1 >= 4 ||
+      /* WebOS 3 and up (TouchPad too)
+                    ~: Mozilla/5.0 (hp-tablet; Linux; hpwOS/3.0.0; U; en-US) AppleWebKit/534.6 (KHTML, like Gecko) wOSBrowser/233.48 Safari/534.6 TouchPad/1.0 */
+      ua.match(/wOSBrowser\/([0-9]+)/) && RegExp.$1 >= 233 && wkLte534 ||
+      /* Nokia Browser N8
+                    ~: Mozilla/5.0 (Symbian/3; Series60/5.2 NokiaN8-00/012.002; Profile/MIDP-2.1 Configuration/CLDC-1.1 ) AppleWebKit/533.4 (KHTML, like Gecko) NokiaBrowser/7.3.0 Mobile Safari/533.4 3gpp-gba
+                    ~: Note: the N9 doesn't have native overflow with one-finger touch. wtf */
+      ua.match(/NokiaBrowser\/([0-9\.]+)/) && parseFloat(RegExp.$1) === 7.3 && webkit && wkversion >= 533);
+    })(),
+
+    // Easing can use any of Robert Penner's equations (http://www.robertpenner.com/easing_terms_of_use.html). By default, overthrow includes ease-out-cubic
+    // arguments: t = current iteration, b = initial value, c = end value, d = total iterations
+    // use w.overthrow.easing to provide a custom function externally, or pass an easing function as a callback to the toss method
+    defaultEasing = function(t, b, c, d) {
+      return c * ((t = t / d - 1) * t * t + 1) + b;
+    },
+
+    enabled = false,
+
+    // Keeper of intervals
+    timeKeeper,
+
+    /* toss scrolls and element with easing
+
+        // elem is the element to scroll
+        // options hash:
+            * left is the desired horizontal scroll. Default is "+0". For relative distances, pass a string with "+" or "-" in front.
+            * top is the desired vertical scroll. Default is "+0". For relative distances, pass a string with "+" or "-" in front.
+            * duration is the number of milliseconds the throw will take. Default is 100.
+            * easing is an optional custom easing function. Default is w.overthrow.easing. Must follow the easing function signature
+        */
+    toss = function(elem, options) {
+      var i = 0,
+        sLeft = elem.scrollLeft,
+        sTop = elem.scrollTop,
+        // Toss defaults
+        o = {
+          top: "+0",
+          left: "+0",
+          duration: 100,
+          easing: w.overthrow.easing
+        },
+        endLeft, endTop;
+
+      // Mixin based on predefined defaults
+      if (options) {
+        for (var j in o) {
+          if (options[j] !== undefined) {
+            o[j] = options[j];
+          }
+        }
+      }
+
+      // Convert relative values to ints
+      // First the left val
+      if (typeof o.left === "string") {
+        o.left = parseFloat(o.left);
+        endLeft = o.left + sLeft;
+      } else {
+        endLeft = o.left;
+        o.left = o.left - sLeft;
+      }
+      // Then the top val
+      if (typeof o.top === "string") {
+        o.top = parseFloat(o.top);
+        endTop = o.top + sTop;
+      } else {
+        endTop = o.top;
+        o.top = o.top - sTop;
+      }
+
+      timeKeeper = setInterval(function() {
+        if (i++ < o.duration) {
+          elem.scrollLeft = o.easing(i, sLeft, o.left, o.duration);
+          elem.scrollTop = o.easing(i, sTop, o.top, o.duration);
+        } else {
+          if (endLeft !== elem.scrollLeft) {
+            elem.scrollLeft = endLeft;
+          }
+          if (endTop !== elem.scrollTop) {
+            elem.scrollTop = endTop;
+          }
+          intercept();
+        }
+      }, 1);
+
+      // Return the values, post-mixin, with end values specified
+      return {
+        top: endTop,
+        left: endLeft,
+        duration: o.duration,
+        easing: o.easing
+      };
+    },
+
+    // find closest overthrow (elem or a parent)
+    closest = function(target, ascend) {
+      return !ascend && target.className && target.className.indexOf("scroll") > -1 && target || closest(target.parentNode);
+    },
+
+    // Intercept any throw in progress
+    intercept = function() {
+      clearInterval(timeKeeper);
+    },
+
+    // Enable and potentially polyfill overflow
+    enable = function() {
+
+      // If it's on,
+      if (enabled) {
+        return;
+      }
+      // It's on.
+      enabled = true;
+
+      // If overflowProbablyAlreadyWorks or at least the element canBeFilledWithPoly, add a class to cue CSS that assumes overflow scrolling will work (setting height on elements and such)
+      if (overflowProbablyAlreadyWorks || canBeFilledWithPoly) {
+        docElem.className += " " + classtext;
+      }
+
+      // Destroy everything later. If you want to.
+      w.overthrow.forget = function() {
+        // Strip the class name from docElem
+        docElem.className = docElem.className.replace(classtext, "");
+        // Remove touch binding (check for method support since this part isn't qualified by touch support like the rest)
+        if (doc.removeEventListener) {
+          doc.removeEventListener("touchstart", start, false);
+        }
+        // reset easing to default
+        w.overthrow.easing = defaultEasing;
+
+        // Let 'em know
+        enabled = false;
+      };
+
+      // If overflowProbablyAlreadyWorks or it doesn't look like the browser canBeFilledWithPoly, our job is done here. Exit viewport left.
+      if (overflowProbablyAlreadyWorks || !canBeFilledWithPoly) {
+        return;
+      }
+
+      // Fill 'er up!
+      // From here down, all logic is associated with touch scroll handling
+      // elem references the overthrow element in use
+      var elem,
+
+      // The last several Y values are kept here
+      lastTops = [],
+
+        // The last several X values are kept here
+        lastLefts = [],
+
+        // lastDown will be true if the last scroll direction was down, false if it was up
+        lastDown,
+
+        // lastRight will be true if the last scroll direction was right, false if it was left
+        lastRight,
+
+        // For a new gesture, or change in direction, reset the values from last scroll
+        resetVertTracking = function() {
+          lastTops = [];
+          lastDown = null;
+        },
+
+        resetHorTracking = function() {
+          lastLefts = [];
+          lastRight = null;
+        },
+
+        // After releasing touchend, throw the overthrow element, depending on momentum
+        finishScroll = function() {
+          // Come up with a distance and duration based on how
+          // Multipliers are tweaked to a comfortable balance across platforms
+          var top = (lastTops[0] - lastTops[lastTops.length - 1]) * 8,
+            left = (lastLefts[0] - lastLefts[lastLefts.length - 1]) * 8,
+            duration = Math.max(Math.abs(left), Math.abs(top)) / 8;
+
+          // Make top and left relative-style strings (positive vals need "+" prefix)
+          top = (top > 0 ? "+" : "") + top;
+          left = (left > 0 ? "+" : "") + left;
+
+          // Make sure there's a significant amount of throw involved, otherwise, just stay still
+          if (!isNaN(duration) && duration > 0 && (Math.abs(left) > 80 || Math.abs(top) > 80)) {
+            toss(elem, {
+              left: left,
+              top: top,
+              duration: duration
+            });
+          }
+        },
+
+        // On webkit, touch events hardly trickle through textareas and inputs
+        // Disabling CSS pointer events makes sure they do, but it also makes the controls innaccessible
+        // Toggling pointer events at the right moments seems to do the trick
+        // Thanks Thomas Bachem http://stackoverflow.com/a/5798681 for the following
+        inputs, setPointers = function(val) {
+          inputs = elem.querySelectorAll("textarea, input");
+          for (var i = 0, il = inputs.length; i < il; i++) {
+            inputs[i].style.pointerEvents = val;
+          }
+        },
+
+        // For nested overthrows, changeScrollTarget restarts a touch event cycle on a parent or child overthrow
+        changeScrollTarget = function(startEvent, ascend) {
+          if (doc.createEvent) {
+            var newTarget = (!ascend || ascend === undefined) && elem.parentNode || elem.touchchild || elem,
+              tEnd;
+
+            if (newTarget !== elem) {
+              tEnd = doc.createEvent("HTMLEvents");
+              tEnd.initEvent("touchend", true, true);
+              elem.dispatchEvent(tEnd);
+              newTarget.touchchild = elem;
+              elem = newTarget;
+              newTarget.dispatchEvent(startEvent);
+            }
+          }
+        },
+
+        // Touchstart handler
+        // On touchstart, touchmove and touchend are freshly bound, and all three share a bunch of vars set by touchstart
+        // Touchend unbinds them again, until next time
+        start = function(e) {
+
+          // Stop any throw in progress
+          intercept();
+
+          // Reset the distance and direction tracking
+          resetVertTracking();
+          resetHorTracking();
+
+          elem = closest(e.target);
+
+          if (!elem || elem === docElem || e.touches.length > 1) {
+            return;
+          }
+
+          setPointers("none");
+          var touchStartE = e,
+            scrollT = elem.scrollTop,
+            scrollL = elem.scrollLeft,
+            height = elem.offsetHeight,
+            width = elem.offsetWidth,
+            startY = e.touches[0].pageY,
+            startX = e.touches[0].pageX,
+            scrollHeight = elem.scrollHeight,
+            scrollWidth = elem.scrollWidth,
+
+            // Touchmove handler
+            move = function(e) {
+
+              var ty = scrollT + startY - e.touches[0].pageY,
+                tx = scrollL + startX - e.touches[0].pageX,
+                down = ty >= (lastTops.length ? lastTops[0] : 0),
+                right = tx >= (lastLefts.length ? lastLefts[0] : 0);
+
+              // If there's room to scroll the current container, prevent the default window scroll
+              if ((ty > 0 && ty < scrollHeight - height) || (tx > 0 && tx < scrollWidth - width)) {
+                e.preventDefault();
+              }
+              // This bubbling is dumb. Needs a rethink.
+              else {
+                changeScrollTarget(touchStartE);
+              }
+
+              // If down and lastDown are inequal, the y scroll has changed direction. Reset tracking.
+              if (lastDown && down !== lastDown) {
+                resetVertTracking();
+              }
+
+              // If right and lastRight are inequal, the x scroll has changed direction. Reset tracking.
+              if (lastRight && right !== lastRight) {
+                resetHorTracking();
+              }
+
+              // remember the last direction in which we were headed
+              lastDown = down;
+              lastRight = right;
+
+              // set the container's scroll
+              elem.scrollTop = ty;
+              elem.scrollLeft = tx;
+
+              lastTops.unshift(ty);
+              lastLefts.unshift(tx);
+
+              if (lastTops.length > 3) {
+                lastTops.pop();
+              }
+              if (lastLefts.length > 3) {
+                lastLefts.pop();
+              }
+            },
+
+            // Touchend handler
+            end = function(e) {
+              // Apply momentum based easing for a graceful finish
+              finishScroll();
+              // Bring the pointers back
+              setPointers("auto");
+              setTimeout(function() {
+                setPointers("none");
+              }, 450);
+              elem.removeEventListener("touchmove", move, false);
+              elem.removeEventListener("touchend", end, false);
+            };
+
+          elem.addEventListener("touchmove", move, false);
+          elem.addEventListener("touchend", end, false);
+        };
+
+      // Bind to touch, handle move and end within
+      doc.addEventListener("touchstart", start, false);
+    };
+
+  // Expose overthrow API
+  w.overthrow = {
+    set: enable,
+    forget: function() {},
+    easing: defaultEasing,
+    toss: toss,
+    intercept: intercept,
+    closest: closest,
+    support: overflowProbablyAlreadyWorks ? "native" : canBeFilledWithPoly && "polyfilled" || "none"
+  };
+
+  // Auto-init
+  enable();
+
+})(this);
+
+/**
+ * External Data & Services Manager
+ *
+ * @namespace Lungo
+ * @class Service
+ * @requires QuoJS
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.Service = (function(lng, $$, undefined) {
+
+  var URL_CACHE_INDEX_KEY = 'lungojs_service_cache';
+  var DATE_PATTERN = {
+    MINUTE: 'minute',
+    HOUR: 'hour',
+    DAY: 'day'
+  };
+
+  /**
+   * Load data from the server using a HTTP GET request.
+   *
+   * @method get
+   *
+   * @param  {string} Containing the URL to which the request is sent
+   * @param  {object} A map or string that is sent to the server with the request
+   * @param  {Function} Callback function after the request [OPTIONAL]
+   * @param  {string} Mime-Type: json, xml, html, or text [OPTIONAL]
+   */
+  var get = function(url, data, success, dataType) {
+      return $$.get(url, data, success, dataType);
+    };
+
+  /**
+   * Load data from the server using a HTTP POST request.
+   *
+   * @method post
+   *
+   * @param  {string} Containing the URL to which the request is sent
+   * @param  {object} A map or string that is sent to the server with the request
+   * @param  {Function} Callback function after the request [OPTIONAL]
+   * @param  {string} Mime-Type: json, xml, html, or text [OPTIONAL]
+   */
+  var post = function(url, data, success, dataType) {
+      return $$.post(url, data, success, dataType);
+    };
+
+  /**
+   * Load data from the server using a HTTP GET request.
+   *
+   * @method json
+   *
+   * @param  {string} Containing the URL to which the request is sent
+   * @param  {object} A map or string that is sent to the server with the request
+   * @param  {Function} [OPTIONAL] Callback function after the request
+   */
+  var json = function(url, data, success) {
+      return $$.json(url, data, success);
+    };
+
+  /**
+   * Auto-caching system with date pattern.
+   *
+   * @method cache
+   *
+   * @param  {string} Containing the URL to which the request is sent
+   * @param  {object} A map or string that is sent to the server with the request
+   * @param  {string} Date pattern (example: 15 minutes, 1 hour, 3 days)
+   * @param  {Function} [OPTIONAL] Callback function after the request
+   * @param  {string} Mime-Type: json, xml, html, or text [OPTIONAL]
+   */
+  var cache = function(url, data, date_pattern, callback, dataType) {
+      var url_key = url + $$.serializeParameters(data);
+
+      if (_urlCached(url_key, date_pattern)) {
+        var value = lng.Data.Storage.persistent(url_key);
+        if (value) {
+          return callback.call(callback, value);
+        }
+      } else {
+        return $$.get(url, data, function(result) {
+          _saveServiceInCache(url_key, result);
+          callback.call(callback, result);
+        }, dataType);
+      }
+    };
+
+  var _urlCached = function(url, date_pattern) {
+      var in_cache = false;
+
+      var url_cache_index = lng.Data.Storage.persistent(URL_CACHE_INDEX_KEY);
+      if (url_cache_index) {
+        var time_between = _calculateTimeSpent(url_cache_index[url]);
+        in_cache = _checkIsValidPattern(time_between, date_pattern);
+      }
+
+      return in_cache;
+    };
+
+  var _calculateTimeSpent = function(url_last_access) {
+      var now = new Date().getTime();
+      var service_last_access = new Date(url_last_access).getTime();
+
+      return now - service_last_access;
+    };
+
+  var _checkIsValidPattern = function(time_between, date_pattern) {
+      var pattern = date_pattern.split(' ');
+      var diference_time = _calculateDiferenceTime(pattern[1], time_between);
+
+      return (diference_time < pattern[0]) ? true : false;
+    };
+
+  var _calculateDiferenceTime = function(pattern_name, time_between) {
+      var diference = (time_between / 1000) / 60;
+
+      if (pattern_name.indexOf(DATE_PATTERN.HOUR) >= 0) {
+        diference = diference / 60;
+      } else if (pattern_name.indexOf(DATE_PATTERN.DAY) >= 0) {
+        diference = (diference / 60) / 24;
+      }
+
+      return diference;
+    };
+
+  var _saveServiceInCache = function(url, result) {
+      var service_cache_index = lng.Data.Storage.persistent(URL_CACHE_INDEX_KEY) || {};
+      service_cache_index[url] = new Date();
+
+      lng.Data.Storage.persistent(URL_CACHE_INDEX_KEY, service_cache_index);
+      lng.Data.Storage.persistent(url, result);
+    };
+
+  return {
+    get: get,
+    post: post,
+    json: json,
+    cache: cache,
+    Settings: $$.ajaxSettings
+  };
+
+})(Lungo, Quo);
+
+/**
+ * Make an analysis of Data attributes in HTML elements and creates a <markup>
+ * based on each data type.
+ *
+ * @namespace Lungo.Boot
+ * @class Data
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com>  || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com>     || @pasku1
+ * @author Ignacio Olalde <ina@tapquo.com>          || @piniphone
+ */
+
+Lungo.Boot.Data = (function(lng, undefined) {
+  var BINDING = lng.Constants.BINDING;
+
+  /**
+   * Initialize the <markup> data-attributes analisys
+   *
+   * @method init
+   *
+   *
+   */
+  var init = function(selector) {
+      var el = lng.dom(selector || document.body);
+      if (el.length > 0) _findDataAttributesIn(el);
+    };
+
+  var _findDataAttributesIn = function(element) {
+      for (var key in lng.Attributes) {
+        if (lng.Core.isOwnProperty(lng.Attributes, key)) {
+          _findElements(element, key);
+        }
+      }
+    };
+
+  var _findElements = function(element, key) {
+      attribute = lng.Attributes[key];
+      var selector = attribute.selector + "[data-" + key + "]";
+      element.find(selector).each(function(index, children) {
+        var el = lng.dom(children);
+        _bindDataAttribute(el, el.data(key), attribute.html);
+      });
+    };
+
+  var _bindDataAttribute = function(element, value, html) {
+      var html_binded = html.replace(BINDING.START + BINDING.KEY + BINDING.END, value);
+      element.prepend(html_binded);
+    };
+
+  return {
+    init: init
+  };
+
+})(Lungo);
+
+/**
+ * Initialize the automatic DOM UI events
+ *
+ * @namespace Lungo.Boot
+ * @class Events
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.Boot.Events = (function(lng, undefined) {
+
+  var ATTRIBUTE = lng.Constants.ATTRIBUTE;
+  var CLASS = lng.Constants.CLASS;
+  var ELEMENT = lng.Constants.ELEMENT;
+  var SELECTORS = {
+    HREF_ASIDE: 'header a[href][data-router=aside]',
+    HREF_TARGET: 'a[href][data-router]',
+    HREF_TARGET_FROM_ASIDE: 'aside a[href][data-router]',
+    INPUT_CHECKBOX: 'input[type=range].checkbox'
+  };
+
+  /**
+   * Initializes the automatic subscription events by markup of the project.
+   *
+   * @method init
+   *
+   */
+  var init = function() {
+      lng.dom(SELECTORS.HREF_TARGET_FROM_ASIDE).tap(_hideAsideIfNecesary);
+      lng.dom(SELECTORS.HREF_TARGET).tap(_loadTarget);
+      lng.dom(SELECTORS.INPUT_CHECKBOX).tap(_changeCheckboxValue);
+      lng.View.Aside.suscribeEvents(lng.dom(SELECTORS.HREF_ASIDE));
+    };
+
+  var _loadTarget = function(event) {
+      event.preventDefault();
+      var link = lng.dom(this);
+
+      if (link.data("async")) {
+        _loadAsyncTarget(link);
+      } else {
+        _selectTarget(link);
+      }
+    };
+
+  var _hideAsideIfNecesary = function(event) {
+      event.preventDefault();
+      lng.View.Aside.hide();
+    };
+
+  var _changeCheckboxValue = function(event) {
+      event.preventDefault();
+      var el = lng.dom(this);
+      var current_value = el.val() > 0 ? 0 : 1;
+      el.toggleClass("active").attr('value', current_value);
+    };
+
+  var _selectTarget = function(link) {
+      var target_type = link.data(ATTRIBUTE.ROUTER);
+      switch (target_type) {
+      case ELEMENT.SECTION:
+        var target_id = link.attr(ATTRIBUTE.HREF);
+        _goSection(target_id);
+        break;
+
+      case ELEMENT.ARTICLE:
+        _goArticle(link);
+        break;
+
+      case ELEMENT.ASIDE:
+        _goAside(link);
+        break;
+      }
+    };
+
+  var _loadAsyncTarget = function(link) {
+      lng.Notification.show();
+      lng.Resource.load(link.data("async"));
+      link[0].removeAttribute("data-async");
+      lng.Boot.Data.init(link.attr(ATTRIBUTE.HREF));
+
+      setTimeout(function() {
+        _selectTarget(link);
+        lng.Notification.hide();
+      }, lng.Constants.TRANSITION.DURATION * 2);
+    };
+
+  var _goSection = function(id) {
+      id = lng.Core.parseUrl(id);
+      if (id === '#back') {
+        lng.Router.back();
+      } else {
+        lng.Router.section(id);
+      }
+    };
+
+  var _goArticle = function(element) {
+      var section_id = lng.Router.History.current();
+      var article_id = element.attr(ATTRIBUTE.HREF);
+
+      lng.Router.article(section_id, article_id, element);
+    };
+
+  var _goAside = function(element) {
+      var section_id = lng.Router.History.current();
+      var aside_id = element.attr(ATTRIBUTE.HREF);
+
+      lng.Router.aside(section_id, aside_id);
+    };
+
+  return {
+    init: init
+  };
+
+})(Lungo);
+
+/**
+ * Initialize the Layout of LungoJS (if it's a mobile environment)
+ *
+ * @namespace Lungo.Boot
+ * @class Layout
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Boot.Layout = (function(lng, undefined) {
+
+  var ELEMENT = lng.Constants.ELEMENT;
+  var CLASS = lng.Constants.CLASS;
+  var ATTRIBUTE = lng.Constants.ATTRIBUTE;
+  var QUERY = lng.Constants.QUERY;
+
+  /**
+   * Initializes all <section> & <article> of the project
+   *
+   * @method init
+   *
+   */
+  var init = function() {
+      lng.Fallback.fixPositionInAndroid();
+
+      _initFirstSection();
+      _initElement(QUERY.LIST_IN_ELEMENT, _createListElement);
+      _initElement(QUERY.ELEMENT_SCROLLABLE, _scrollFix);
+    };
+
+  var _initFirstSection = function() {
+      var section = lng.dom(ELEMENT.SECTION).first().addClass(CLASS.SHOW);
+      lng.Element.Cache.section = section;
+      lng.Element.Cache.article = section.children(ELEMENT.ARTICLE + "." + CLASS.ACTIVE);
+
+      lng.View.Article.switchReferenceItems(lng.Element.Cache.article.attr("id"), section);
+
+      var section_id = '#' + section.attr(ATTRIBUTE.ID);
+      lng.Router.History.add(section_id);
+    };
+
+  var _initElement = function(selector, callback) {
+      var found_elements = lng.dom(selector);
+      for (var i = 0, len = found_elements.length; i < len; i++) {
+        var element = lng.dom(found_elements[i]);
+        lng.Core.execute(callback, element);
+      }
+    };
+
+  var _createListElement = function(element) {
+      if (element.children().length === 0) {
+        var element_id = element.attr(ATTRIBUTE.ID);
+        element.append(ELEMENT.LIST);
+      }
+    };
+
+  var _scrollFix = function(element) {
+      element[0].addEventListener('touchstart', function(event) {
+        scrollTop = this.scrollTop;
+        if (scrollTop <= 1) {
+          this.scrollTop = 1;
+        }
+        if (scrollTop + this.offsetHeight >= this.scrollHeight) {
+          this.scrollTop = this.scrollHeight - this.offsetHeight - 1;
+        }
+      }, false);
+    };
+
+  return {
+    init: init
+  };
+
+})(Lungo);
+
+/**
+ * Temporary cache system
+ *
+ * @namespace Lungo.Data
+ * @class Cache
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.Data.Cache = (function(lng, undefined) {
+
+  var _cache = {};
+
+  /**
+   * Sets in the LungoJS cache system a new key/value
+   *
+   * @method set
+   *
+   * @param {string} Key for the new value
+   * @param {object} Type of environment: DESKTOP_ENVIRONMENT or MOBILE_ENVIRONMENT
+   */
+  var set = function(key, value) {
+      if (exists(key)) {
+        _cache[key] = lng.Core.mix(get(key), value);
+      } else {
+        _cache[key] = value;
+      }
+    };
+
+  /**
+   * Returns the value of a given key.
+   *
+   * @method get
+   *
+   * @param {string} Key in LungoJS Cache System
+   * @param {string} [OPTIONAL] Subkey in LungoJS Cache System
+   * @return {object} Value
+   */
+  var get = function(key, value) {
+      if (arguments.length === 1) {
+        return _cache[key];
+      } else {
+        return (_cache[arguments[0]]) ? _cache[arguments[0]][arguments[1]] : undefined;
+      }
+    };
+
+  /**
+   * Removes the instance in LungoJs Cache System of a given key
+   *
+   * @method remove
+   *
+   * @param {string} Key in LungoJS Cache System
+   * @param {string} [OPTIONAL] Subkey in LungoJS Cache System
+   */
+  var remove = function(key, value) {
+      if (arguments.length === 1) {
+        delete _cache[key];
+      } else {
+        delete _cache[arguments[0]][arguments[1]];
+      }
+    };
+
+  /**
+   * Returns the existence of a key in LungoJs Cache System
+   *
+   * @method exists
+   *
+   * @param {String} Key in LungoJS Cache System
+   * @return {Boolean} true if exists, false if not
+   */
+  var exists = function(key) {
+      return (_cache[key]) ? true : false;
+    };
+
+  return {
+    set: set,
+    get: get,
+    remove: remove,
+    exists: exists
+  };
+
+})(Lungo);
+
+/**
+ * Wrapper for using WebSql (HTML5 feature)
+ *
+ * @namespace Lungo.Data
+ * @class Sql
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.Data.Sql = (function(lng, undefined) {
+
+  var ERROR = lng.Constants.ERROR;
+  var CONFIG = {
+    name: 'lungo_db',
+    version: '1.0',
+    size: 65536,
+    schema: []
+  };
+
+  var db = null;
+
+  /**
+   * Initialize the SQLite storage (HTML5 Feature)
+   *
+   * @method init
+   *
+   * @param {object} Configuration for the Database
+   */
+  var init = function(db_config) {
+      CONFIG = lng.Core.mix(CONFIG, db_config);
+
+      db = openDatabase(CONFIG.name, CONFIG.version, CONFIG.name, CONFIG.size);
+      if (db) {
+        _createSchema();
+      } else {
+        throw new Error(ERROR.DATABASE);
+      }
+    };
+
+  /**
+   * Select a data set of a given table and based on a selection object
+   *
+   * @method select
+   *
+   * @param {string} Name of the table in the database
+   * @param {object} [OPTIONAL] Object selection condition
+   * @param {Function} Callback when the process is complete
+   */
+  var select = function(table, where_obj, callback) {
+      var where = (where_obj) ? ' WHERE ' + _convertToSql(where_obj, 'AND') : '';
+
+      execute('SELECT * FROM ' + table + where, function(rs) {
+        var result = [];
+        for (var i = 0, len = rs.rows.length; i < len; i++) {
+          result.push(rs.rows.item(i));
+        }
+
+        _callbackResponse(callback, result);
+      });
+    };
+
+  /**
+   * Inserts a data set of a given table and based on a data object
+   *
+   * @method insert
+   *
+   * @param {string} Name of the table in the database
+   * @param {object} Object (or Array of objects) to insert in table
+   */
+  var insert = function(table, data, callback) {
+      if (lng.Core.toType(data) === 'object') {
+        _insertRow(table, data);
+      } else {
+        for (row in data) {
+          _insertRow(table, data[row]);
+        }
+      }
+    };
+
+  /**
+   * Updates a data set of a given table and based on a data object and
+   * an optional selection object
+   *
+   * @method update
+   *
+   * @param {string} Name of the table in the database
+   * @param {object} Data object to update in table
+   * @param {object} [OPTIONAL] Object selection condition
+   */
+  var update = function(table, data_obj, where_obj, callback) {
+      var sql = 'UPDATE ' + table + ' SET ' + _convertToSql(data_obj, ',');
+      if (where_obj) sql += ' WHERE ' + _convertToSql(where_obj, 'AND');
+
+      execute(sql);
+    };
+
+  /**
+   * Delete a data set of a given table and based on a selection object
+   *
+   * @method drop
+   *
+   * @param {string} Name of the table in the database
+   * @param {object} [OPTIONAL] Object selection condition
+   */
+  var drop = function(table, where_obj, callback) {
+      var where = (where_obj) ? ' WHERE ' + _convertToSql(where_obj, 'AND') : '';
+
+      execute('DELETE FROM ' + table + where + ';');
+    };
+
+  /**
+   * Executes a SQL statement in the SQLite storage
+   *
+   * @method execute
+   *
+   * @param {string} SQL statement
+   * @param {Function} Callback when the process is complete
+   */
+  var execute = function(sql, callback) {
+      lng.Core.log(1, 'lng.Data.Sql >> ' + sql);
+
+      db.transaction(function(transaction) {
+        transaction.executeSql(sql, [], function(transaction, rs) {
+          _callbackResponse(callback, rs);
+        }, function(transaction, error) {
+          transaction.executedQuery = sql;
+          _throwError.apply(null, arguments);
+        });
+      });
+    };
+
+  var _createSchema = function() {
+      var schema = CONFIG.schema;
+      var schema_len = schema.length;
+      if (!schema_len) return;
+
+      for (var i = 0; i < schema_len; i++) {
+        var current = schema[i];
+
+        _regenerateTable(current);
+        _createTable(current.name, current.fields);
+      }
+    };
+
+  var _createTable = function(table, fields) {
+      var sql_fields = '';
+      for (var field in fields) {
+        if (lng.Core.isOwnProperty(fields, field)) {
+          if (sql_fields) sql_fields += ', ';
+          sql_fields += field + ' ' + fields[field];
+        }
+      }
+
+      execute('CREATE TABLE IF NOT EXISTS ' + table + ' (' + sql_fields + ');');
+    };
+
+  var _regenerateTable = function(table) {
+      if (table.drop === true) {
+        _dropTable(table.name);
+      }
+    };
+
+  var _dropTable = function(table) {
+      execute('DROP TABLE IF EXISTS ' + table);
+    };
+
+  var _convertToSql = function(fields, separator) {
+      var sql = '';
+
+      for (var field in fields) {
+        if (lng.Core.isOwnProperty(fields, field)) {
+          var value = fields[field];
+          if (sql) sql += ' ' + separator + ' ';
+          sql += field + '=';
+          sql += (isNaN(value)) ? '"' + value + '"' : value;
+        }
+      }
+      return sql;
+    };
+
+  var _callbackResponse = function(callback, response) {
+      if (lng.Core.toType(callback) === 'function') {
+        setTimeout(callback, 100, response);
+      }
+    };
+
+  var _insertRow = function(table, row) {
+      var fields = '';
+      var values = '';
+
+      for (var field in row) {
+        if (lng.Core.isOwnProperty(row, field)) {
+          var value = row[field];
+          fields += (fields) ? ', ' + field : field;
+          if (values) values += ', ';
+          values += (isNaN(value) || value == '') ? '"' + value + '"' : value;
+        }
+      }
+
+      execute('INSERT INTO ' + table + ' (' + fields + ') VALUES (' + values + ')');
+    };
+
+  var _throwError = function(transaction, error) {
+      throw new Error(ERROR.DATABASE_TRANSACTION + error.code + ': ' + error.message + ' \n Executed query: ' + transaction.executedQuery);
+    };
+
+  return {
+    init: init,
+    select: select,
+    insert: insert,
+    update: update,
+    drop: drop,
+    execute: execute
+  };
+
+})(Lungo);
+
+/**
+ * Wrapper for using LocalStorage & SessionStorage (HTML5 Feature)
+ *
+ * @namespace Lungo.Data
+ * @class Storage
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.Data.Storage = (function(lng, undefined) {
+
+  var STORAGE = {
+    PERSISTENT: 'localStorage',
+    SESSION: 'sessionStorage'
+  };
+
+  /**
+   * Wrapper for SessionStorage
+   *
+   * @method persistent
+   *
+   * @param {string} Key
+   * @param {object} Value
+   * @return {string} If no value assigned returns the value of established key
+   */
+  var persistent = function(key, value) {
+      return _handler(STORAGE.PERSISTENT, key, value);
+    };
+
+  /**
+   * Wrapper for SessionStorage
+   *
+   * @method session
+   *
+   * @param {string} Key
+   * @param {object} Value
+   * @return {string} If no value assigned returns the value of established key
+   */
+  var session = function(key, value) {
+      return _handler(STORAGE.SESSION, key, value);
+    };
+
+  var _handler = function(storage, key, value) {
+      var storage = window[storage];
+
+      if (value) {
+        _saveKey(storage, key, value);
+      } else if (value === null) {
+        _removeKey(storage, key);
+      } else {
+        return _getKey(storage, key);
+      }
+    };
+
+  var _saveKey = function(storage, key, value) {
+      value = JSON.stringify(value);
+      storage.setItem(key, value);
+    };
+
+  var _removeKey = function(storage, key) {
+      storage.removeItem(key);
+    };
+
+  var _getKey = function(storage, key) {
+      value = storage.getItem(key);
+      return JSON.parse(value);
+    };
+
+  return {
+    session: session,
+    persistent: persistent
+  };
+
+})(Lungo);
+
+/**
+ * DOM Elements caching
+ *
+ * @namespace Lungo.Element
+ * @class Cache
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Element.Cache = {
+  // sections: null,
+  section: null,
+
+  article: null,
+
+  aside: null,
+
+  navigation: null
+};
+
+/**
+ * Creates a instance of Carousel Element
+ *
+ * @namespace Lungo.Element
+ * @class Carousel
+ * @version 1.0
+ *
+ * @author Ignacio Olalde <ina@tapquo.com> || @piniphone
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+
+Lungo.Element.Carousel = function(element, callback) {
+
+  var _instance = {
+    index: 0,
+    speed: 300,
+    callback: callback,
+    container: element,
+    element: element.children[0],
+    slide: undefined,
+    slides: [],
+    slides_length: 0,
+    width: 0,
+    start: {},
+    isScrolling: undefined,
+    deltaX: 0
+  };
+
+  var prev = function(delay) {
+      if (_instance.index) {
+        _slide(_instance.index - 1, _instance.speed);
+      }
+    };
+
+  var next = function(delay) {
+      if (_instance.index < _instance.slides_length - 1) {
+        _slide(_instance.index + 1, _instance.speed);
+      } else {
+        _slide(0, _instance.speed);
+      }
+    };
+
+  var position = function() {
+      return _instance.index;
+    };
+
+  var refresh = function() {
+      _setup();
+    };
+
+  var _setup = function() {
+      _instance.slides = _instance.element.children;
+      _instance.slides_length = _instance.slides.length;
+      if (_instance.slides_length < 2) return null;
+
+      _instance.width = ("getBoundingClientRect" in _instance.container) ? _instance.container.getBoundingClientRect().width : _instance.container.offsetWidth;
+
+      if (!_instance.width) return null;
+      _instance.element.style.width = (_instance.slides.length * _instance.width) + 'px';
+      var index = _instance.slides.length;
+      while (index--) {
+        var el = _instance.slides[index];
+        el.style.width = _instance.width + 'px';
+        el.style.display = 'table-cell';
+        el.style.verticalAlign = 'top';
+      }
+      _slide(_instance.index, 0);
+      _instance.container.style.visibility = 'visible';
+    };
+
+  var _slide = function(index, duration) {
+      var style = _instance.element.style;
+      if (duration == undefined) {
+        duration = _instance.speed;
+      }
+      style.webkitTransitionDuration = style.MozTransitionDuration = style.msTransitionDuration = style.OTransitionDuration = style.transitionDuration = duration + 'ms';
+
+      style.MozTransform = style.webkitTransform = 'translate3d(' + -(index * _instance.width) + 'px,0,0)';
+      style.msTransform = style.OTransform = 'translateX(' + -(index * _instance.width) + 'px)';
+      _instance.index = index;
+    };
+
+  var _handleGestures = function() {
+      _instance.element.addEventListener('touchstart', _touchStart, false);
+      _instance.element.addEventListener('touchmove', _touchMove, false);
+      _instance.element.addEventListener('touchend', _touchEnd, false);
+      _instance.element.addEventListener('webkitTransitionEnd', _transitionEnd, false);
+      _instance.element.addEventListener('msTransitionEnd', _transitionEnd, false);
+      _instance.element.addEventListener('oTransitionEnd', _transitionEnd, false);
+      _instance.element.addEventListener('transitionend', _transitionEnd, false);
+      window.addEventListener('resize', _setup, false);
+    };
+
+  var _touchStart = function(event) {
+      _instance.start = {
+        pageX: event.touches[0].pageX,
+        pageY: event.touches[0].pageY,
+        time: Number(new Date())
+      };
+      _instance.isScrolling = undefined;
+      _instance.deltaX = 0;
+      _instance.element.style.MozTransitionDuration = _instance.element.style.webkitTransitionDuration = 0;
+      event.stopPropagation();
+    };
+
+  var _touchMove = function(e) {
+      if (e.touches.length > 1 || e.scale && e.scale !== 1) return;
+      _instance.deltaX = e.touches[0].pageX - _instance.start.pageX;
+      if (typeof _instance.isScrolling == 'undefined') {
+        _instance.isScrolling = !! (_instance.isScrolling || Math.abs(_instance.deltaX) < Math.abs(e.touches[0].pageY - _instance.start.pageY));
+      }
+      if (!_instance.isScrolling) {
+        e.preventDefault();
+        var factor = ((!_instance.index && _instance.deltaX > 0 || _instance.index == _instance.slides_length - 1 && _instance.deltaX < 0) ? (Math.abs(_instance.deltaX) / _instance.width + 1) : 1);
+        _instance.deltaX = _instance.deltaX / factor;
+        var pos = (_instance.deltaX - _instance.index * _instance.width);
+        _instance.element.style.MozTransform = _instance.element.style.webkitTransform = 'translate3d(' + pos + 'px,0,0)';
+        e.stopPropagation();
+      }
+    };
+
+  var _touchEnd = function(e) {
+      var isValidSlide = Number(new Date()) - _instance.start.time < 250 && Math.abs(_instance.deltaX) > 20 || Math.abs(_instance.deltaX) > _instance.width / 2;
+      var isPastBounds = !_instance.index && _instance.deltaX > 0 || _instance.index == _instance.slides_length - 1 && _instance.deltaX < 0;
+      if (!_instance.isScrolling) {
+        _slide(_instance.index + (isValidSlide && !isPastBounds ? (_instance.deltaX < 0 ? 1 : -1) : 0), _instance.speed);
+      }
+      e.stopPropagation();
+    };
+
+  var _transitionEnd = function(event) {
+      if (_instance.callback) {
+        _instance.callback.apply(_instance.callback, [_instance.index, _instance.slides[_instance.index]]);
+      }
+    };
+
+  _setup();
+  _handleGestures();
+
+  return {
+    prev: prev,
+    next: next,
+    position: position,
+    refresh: refresh
+  };
+};
+
+/**
+ * Creates a instance of Carousel Element
+ *
+ * @namespace Lungo.Element
+ * @class Carousel
+ * @version 1.0
+ *
+ * @author Ignacio Olalde <ina@tapquo.com> || @piniphone
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+
+Lungo.Element.Carousel = function(element, callback) {
+
+  var _instance = {
+    gestureStarted: false,
+    index: 0,
+    speed: 300,
+    callback: callback,
+    container: element,
+    element: element.children[0],
+    slide: undefined,
+    slides: [],
+    slides_length: 0,
+    width: 0,
+    start: {},
+    isScrolling: undefined,
+    deltaX: 0
+  };
+
+  var prev = function(delay) {
+      if (_instance.index) _slide(_instance.index - 1, _instance.speed);
+    };
+
+  var next = function(delay) {
+      var index = _instance.index < _instance.slides_length - 1 ? _instance.index + 1 : 0;
+      _slide(index, _instance.speed);
+    };
+
+  var position = function() {
+      return _instance.index;
+    };
+
+  var refresh = function() {
+      _setup();
+    };
+
+  var _setup = function() {
+      _instance.slides = _instance.element.children;
+      _instance.slides_length = _instance.slides.length;
+      if (_instance.slides_length < 2) return null;
+
+      _instance.width = ("getBoundingClientRect" in _instance.container) ? _instance.container.getBoundingClientRect().width : _instance.container.offsetWidth;
+
+      if (!_instance.width) return null;
+      _instance.element.style.width = (_instance.slides.length * _instance.width) + 'px';
+      var index = _instance.slides.length;
+      while (index--) {
+        var el = _instance.slides[index];
+        el.style.width = _instance.width + 'px';
+        el.style.display = 'table-cell';
+        el.style.verticalAlign = 'top';
+      }
+      _slide(_instance.index, 0);
+      _instance.container.style.visibility = 'visible';
+    };
+
+  var _slide = function(index, duration) {
+      var style = _instance.element.style;
+      if (duration == undefined) {
+        duration = _instance.speed;
+      }
+      style.webkitTransitionDuration = style.MozTransitionDuration = style.msTransitionDuration = style.OTransitionDuration = style.transitionDuration = duration + 'ms';
+      style.MozTransform = style.webkitTransform = 'translate3d(' + -(index * _instance.width) + 'px,0,0)';
+      style.msTransform = style.OTransform = 'translateX(' + -(index * _instance.width) + 'px)';
+      _instance.index = index;
+    };
+
+  var _handleGestures = function() {
+      $$(_instance.element).swiping(function(event) {
+        if (!_instance.gestureStarted) _startGesture(event);
+        else _moveGesture(event);
+      });
+      $$(_instance.element).swipe(_handleGestureEnd);
+      $$(_instance.element).on('webkitTransitionEnd', _transitionEnd, false);
+      $$(_instance.element).on('msTransitionEnd', _transitionEnd, false);
+      $$(_instance.element).on('oTransitionEnd', _transitionEnd, false);
+      $$(_instance.element).on('transitionend', _transitionEnd, false);
+      $$(window).on('resize', _setup, false);
+    };
+
+  _startGesture = function(event) {
+    _instance.start = {
+      pageX: event.currentTouch.x,
+      pageY: event.currentTouch.y,
+      time: Number(new Date())
+    };
+    _instance.isScrolling = undefined;
+    _instance.deltaX = 0;
+    _instance.element.style.MozTransitionDuration = _instance.element.style.webkitTransitionDuration = 0;
+    if (typeof event.stopPropagation === "function") event.stopPropagation();
+    _instance.gestureStarted = true;
+  };
+
+  _moveGesture = function(event) {
+    _instance.deltaX = event.currentTouch.x - _instance.start.pageX;
+    if (typeof _instance.isScrolling == 'undefined') {
+      _instance.isScrolling = !! (_instance.isScrolling || Math.abs(_instance.deltaX) < Math.abs(event.currentTouch.y - _instance.start.pageY));
+    }
+    if (!_instance.isScrolling) {
+      event.preventDefault();
+      var factor = ((!_instance.index && _instance.deltaX > 0 || _instance.index == _instance.slides_length - 1 && _instance.deltaX < 0) ? (Math.abs(_instance.deltaX) / _instance.width + 1) : 1);
+      _instance.deltaX = _instance.deltaX / factor;
+      var pos = (_instance.deltaX - _instance.index * _instance.width);
+      _instance.element.style.MozTransform = _instance.element.style.webkitTransform = 'translate3d(' + pos + 'px,0,0)';
+      if (typeof event.stopPropagation === "function") event.stopPropagation();
+    }
+  };
+
+  var _handleGestureEnd = function() {
+      if (_instance.gestureStarted) {
+        var isValidSlide = Number(new Date()) - _instance.start.time < 250 && Math.abs(_instance.deltaX) > 20 || Math.abs(_instance.deltaX) > _instance.width / 2;
+        var isPastBounds = !_instance.index && _instance.deltaX > 0 || _instance.index == _instance.slides_length - 1 && _instance.deltaX < 0;
+        if (!_instance.isScrolling) {
+          _slide(_instance.index + (isValidSlide && !isPastBounds ? (_instance.deltaX < 0 ? 1 : -1) : 0), _instance.speed);
+        }
+        if (typeof event.stopPropagation === "function") event.stopPropagation();
+        _instance.gestureStarted = false;
+      }
+    };
+
+  var _transitionEnd = function(event) {
+      if (_instance.callback) {
+        _instance.callback.apply(_instance.callback, [_instance.index, _instance.slides[_instance.index]]);
+      }
+    };
+
+  _setup();
+  _handleGestures();
+
+  return {
+    prev: prev,
+    next: next,
+    position: position,
+    refresh: refresh
+  };
+};
+
+/**
+ * Set a counter to the element
+ *
+ * @namespace Lungo.Element
+ * @class count
+ *
+ * @param  {string} Element query selector
+ * @param  {number} Value for counter
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Element.count = function(selector, count) {
+  var element = Lungo.dom(selector);
+  element.children('.bubble.count').remove();
+
+  if (element && count) {
+    var binding = Lungo.Constants.BINDING.SELECTOR;
+    html = Lungo.Attributes.count.html.replace(binding, count);
+    element.append(html);
+  }
+};
+
+/**
+ * Creates a loading element in any area of layout
+ *
+ * @namespace Lungo.Element
+ * @method loading
+ *
+ * @param  {string}  Element query selector
+ * @param  {number}  stylesheet (null for hide)
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Element.loading = function(selector, stylesheet) {
+  var element = Lungo.dom(selector);
+
+  if (element) {
+    var html = null;
+
+    if (stylesheet) {
+      var binding = Lungo.Constants.BINDING.SELECTOR;
+      html = Lungo.Attributes.loading.html.replace(binding, stylesheet);
+    }
+    element.html(html);
+  }
+};
+
+/**
+ * Set a progress to the element
+ *
+ * @namespace Lungo.Element
+ * @method Progress
+ *
+ * @param  {string}  Element query selector
+ * @param  {number}  Percentage
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Element.progress = function(selector, percentage) {
+  var element = Lungo.dom(selector);
+
+  if (element) {
+    percentage += Lungo.Constants.ATTRIBUTE.PERCENT;
+    element.find('.value').style(Lungo.Constants.ATTRIBUTE.WIDTH, percentage);
+  }
+};
+
+/**
+ * Creates a instance of Pull & Refresh Element
+ *
+ * @namespace Lungo.Element
+ * @class Pull
+ * @version 1.0
+ *
+ * @author Ignacio Olalde <ina@tapquo.com> || @piniphone
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.Element.Pull = function(element_selector, config_data) {
+
+  var REFRESHING_HEIGHT = 60;
+  var MAX_HEIGHT = 80;
+  var ANIMATION_TIME = 300;
+  var CURRENT_DISTANCE = 0;
+  var REFRESHING = false;
+  var ELEMENT = $$(element_selector);
+  var CONTAINER = ELEMENT.siblings('div[data-control="pull"]');
+  var CONFIG;
+
+  var CONFIG_BASE = {
+    onPull: "Pull down to refresh",
+    onRelease: "Release to...",
+    onRefresh: "Loading...",
+    callback: undefined
+  };
+
+  CONFIG = Lungo.Core.mix(CONFIG_BASE, config_data);
+
+  var hide = function() {
+      _moveElementTo(0, true);
+      setTimeout(function() {
+        REFRESHING = false;
+        document.removeEventListener('touchmove', _blockGestures, false);
+      }, ANIMATION_TIME);
+      CURRENT_DISTANCE = 0;
+    };
+
+  var _moveElementTo = function(posY, animate) {
+      var newPos = posY > MAX_HEIGHT ? MAX_HEIGHT : posY;
+      if (animate) ELEMENT.addClass('pull');
+
+      ELEMENT.style('-webkit-transform', 'translate(0, ' + (newPos) + 'px)');
+      if (animate) {
+        setTimeout(function() {
+          ELEMENT.removeClass('pull');
+        }, ANIMATION_TIME);
+      }
+    };
+
+  var _refreshStart = function(event) {
+      REFRESHING = true;
+      document.addEventListener('touchmove', _blockGestures, false);
+      _setContainerTitle(CONFIG.onRefresh);
+      _setContainerLoading(true);
+      _moveElementTo(REFRESHING_HEIGHT, true);
+
+      if (CONFIG.callback) {
+        CONFIG.callback.apply(this);
+      }
+    };
+
+  var _setContainerTitle = function(title) {
+      CONTAINER.find('strong').html(title);
+    };
+
+  var _setContainerLoading = function(op) {
+      if (op) {
+        CONTAINER.addClass("refresh");
+      } else {
+        CONTAINER.removeClass("refresh");
+      }
+    };
+
+  var _setContainerOnPulling = function(op) {
+      if (op) {
+        CONTAINER.addClass("rotate");
+      } else {
+        CONTAINER.removeClass("rotate");
+      }
+    };
+
+  var _blockGestures = function(touchEvent) {
+      touchEvent.preventDefault();
+    };
+
+  var _handlePulling = function(event) {
+      _moveElementTo(CURRENT_DISTANCE, false);
+      _setContainerLoading(false);
+      if (CURRENT_DISTANCE > REFRESHING_HEIGHT) {
+        _setContainerTitle(CONFIG.onRelease);
+        _setContainerOnPulling(true);
+      } else {
+        _setContainerTitle(CONFIG.onPull);
+        _setContainerOnPulling(false);
+      }
+    };
+
+  var _handlePullEnd = function(event) {
+      if (CURRENT_DISTANCE > REFRESHING_HEIGHT) _refreshStart();
+      else hide();
+    };
+
+  (function() {
+    var STARTED = false;
+    var INI_Y = {};
+    ELEMENT.bind('touchstart', function(event) {
+      if (ELEMENT[0].scrollTop <= 1) {
+        STARTED = true;
+        INI_Y = $$.isMobile() ? event.touches[0].pageY : event.pageY;
+      }
+    }).bind('touchmove', function(event) {
+      if (!REFRESHING && STARTED) {
+        current_y = $$.isMobile() ? event.touches[0].pageY : event.pageY;
+        CURRENT_DISTANCE = current_y - INI_Y;
+        if (CURRENT_DISTANCE >= 0) {
+          ELEMENT.style('overflow-y', 'hidden');
+          _handlePulling();
+        }
+      }
+    }).bind('touchend', function() {
+      if (STARTED) {
+        ELEMENT.style('overflow-y', 'scroll');
+        _handlePullEnd();
+      }
+      INI_TOUCH = {};
+      STARTED = false;
+    });
+  })();
+
+  return {
+    hide: hide
+  };
+};
+
+/**
+ * Handles the <sections> and <articles> to show
+ *
+ * @namespace Lungo
+ * @class Router
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.Router = (function(lng, undefined) {
+
+  var CLASS = lng.Constants.CLASS;
+  var ELEMENT = lng.Constants.ELEMENT;
+  var ERROR = lng.Constants.ERROR;
+  var TRIGGER = lng.Constants.TRIGGER;
+  var ATTRIBUTE = lng.Constants.ATTRIBUTE;
+  var HASHTAG_CHARACTER = '#';
+
+  /**
+   * Navigate to a <section>.
+   *
+   * @method section
+   *
+   * @param {string} Id of the <section>
+   */
+  var section = function(section_id) {
+      section_id = lng.Core.parseUrl(section_id);
+      var current = lng.Element.Cache.section;
+
+      if (_notCurrentTarget(section_id, current)) {
+        var target = current.siblings(ELEMENT.SECTION + section_id);
+
+        if (target.length > 0) {
+          target_transition = target.data('transition');
+          if (target_transition) {
+            _assignTransitionOrigin(current);
+            _assignTransition(current, target_transition);
+          }
+
+          current.removeClass(CLASS.SHOW).addClass(CLASS.HIDE);
+          target.removeClass(CLASS.HIDE).addClass(CLASS.SHOW);
+          lng.Element.Cache.section = target;
+          lng.Element.Cache.article = target.find(ELEMENT.ARTICLE + '.' + CLASS.ACTIVE);
+
+          lng.Router.History.add(section_id);
+          _sectionTriggers(current, target);
+        }
+      }
+    };
+
+  /**
+   * Displays the <article> in a particular <section>.
+   *
+   * @method article
+   *
+   * @param {string} <section> Id
+   * @param {string} <article> Id
+   */
+  var article = function(section_id, article_id, element) {
+      article_id = lng.Core.parseUrl(article_id);
+
+      var current = lng.Element.Cache.article;
+      if (_notCurrentTarget(article_id, current)) {
+        section(section_id);
+        var target = lng.Element.Cache.section.find(ELEMENT.ARTICLE + article_id);
+
+        if (target.length > 0) {
+          if (_sectionId(current) !== _sectionId(target)) {
+            current = lng.Element.Cache.section.children(ELEMENT.ARTICLE);
+          }
+
+          current.removeClass(CLASS.ACTIVE).trigger(TRIGGER.UNLOAD);
+          target.addClass(CLASS.ACTIVE).trigger(TRIGGER.LOAD);
+
+          lng.Element.Cache.article = target;
+
+          lng.View.Article.switchNavItems(article_id);
+          lng.View.Article.switchReferenceItems(article_id, lng.Element.Cache.section);
+
+          if (element) lng.View.Article.title(element.data(ATTRIBUTE.TITLE));
+        }
+      }
+    };
+
+  /**
+   * Displays the <aside> in a particular <section>.
+   *
+   * @method aside
+   *
+   * @param {string} <section> Id
+   * @param {string} <aside> Id
+   */
+  var aside = function(section_id, aside_id) {
+      aside_id = lng.Core.parseUrl(aside_id);
+      lng.View.Aside.toggle(aside_id);
+    };
+
+  /**
+   * Return to previous section.
+   *
+   * @method back
+   */
+  var back = function() {
+      var current = lng.Element.Cache.section;
+      current.removeClass(CLASS.SHOW).addClass(CLASS.HIDING);
+
+      // #TODO: Refactor
+      setTimeout(function() {
+        current.removeClass(CLASS.HIDING);
+      }, lng.Constants.TRANSITION.DURATION);
+
+      lng.Router.History.removeLast();
+      target = current.siblings(ELEMENT.SECTION + lng.Router.History.current());
+
+      _assignTransition(target, target.data('transition-origin'));
+      target.removeClass(CLASS.HIDE).addClass(CLASS.SHOW);
+      lng.Element.Cache.section = target;
+      lng.Element.Cache.article = target.find(ELEMENT.ARTICLE + "." + CLASS.ACTIVE);
+
+      _sectionTriggers(current, target);
+    };
+
+  var _notCurrentTarget = function(target, element) {
+      return (target !== HASHTAG_CHARACTER + element.attr('id')) ? true : false;
+    };
+
+  var _sectionId = function(element) {
+      return element.parent('section').attr('id');
+    };
+
+  var _sectionTriggers = function(current, target) {
+      current.trigger(TRIGGER.UNLOAD);
+      target.trigger(TRIGGER.LOAD);
+    };
+
+  var _assignTransition = function(section, transitionName) {
+      section.data('transition', transitionName);
+    };
+
+  var _assignTransitionOrigin = function(section) {
+      section.data('transition-origin', section.data('transition'));
+    };
+
+  return {
+    section: section,
+    article: article,
+    aside: aside,
+    back: back
+  };
+
+})(Lungo);
+
+/**
+ * Stores the displayed <sections> as a historical.
+ *
+ * @namespace Lungo.Router
+ * @class History
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.Router.History = (function(undefined) {
+
+  var _history = [];
+
+  /**
+   * Create a new element to the browsing history based on the current section id.
+   *
+   * @method add
+   *
+   * @param  {string} Id of the section
+   */
+  var add = function(section_id) {
+      if (section_id !== current()) {
+        _history.push(section_id);
+      }
+    };
+
+  /**
+   * Returns the current browsing history section id.
+   *
+   * @method current
+   *
+   * @return {string} Current section id
+   */
+  var current = function() {
+      return _history[_history.length - 1];
+    };
+
+  /**
+   * Removes the current item browsing history.
+   *
+   * @method removeLast
+   */
+  var removeLast = function() {
+      _history.length -= 1;
+    };
+
+  return {
+    add: add,
+    current: current,
+    removeLast: removeLast
+  };
+
+})();
+
+/**
+ * Initialize the <articles> layout of a certain <section>
+ *
+ * @namespace Lungo.View
+ * @class Article
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ * @author Guillermo Pascual <pasku@tapquo.com> || @pasku1
+ */
+
+Lungo.View.Article = (function(lng, undefined) {
+
+  var ELEMENT = lng.Constants.ELEMENT;
+  var CLASS = lng.Constants.CLASS;
+  var ATTRIBUTE = lng.Constants.ATTRIBUTE;
+
+  var SELECTORS = {
+    NAVIGATION_ITEM: 'a[href][data-router="article"]',
+    REFERENCE_LINK: ' a[href][data-article]',
+    TITLE_OF_ARTICLE: 'header .title, footer .title',
+    ASIDE_REFERENCE_LIST: 'li a.active, li.active'
+  };
+
+  /**
+   * ?
+   *
+   * @method show
+   */
+  var title = function(value) {
+      if (value) {
+        lng.Element.Cache.section.find(SELECTORS.TITLE_OF_ARTICLE).text(value);
+      }
+    };
+
+  var switchNavItems = function(article_id) {
+      lng.Element.Cache.section.find(SELECTORS.NAVIGATION_ITEM).removeClass(CLASS.ACTIVE);
+
+      var active_nav_items = 'a[href="' + article_id + '"][data-router="article"]';
+      lng.Element.Cache.section.find(active_nav_items).addClass(CLASS.ACTIVE);
+
+      if (lng.Element.Cache.aside) {
+        aside = lng.Element.Cache.aside;
+
+        aside.find(SELECTORS.ASIDE_REFERENCE_LIST).removeClass(CLASS.ACTIVE);
+        aside.find(active_nav_items).addClass(CLASS.ACTIVE).parent().addClass(CLASS.ACTIVE);
+      }
+    };
+
+  var switchReferenceItems = function(article_id, section) {
+      var reference = "[data-article=" + article_id.replace('#', '') + "]";
+      section.find(SELECTORS.REFERENCE_LINK).hide().siblings(reference).show();
+    };
+
+  return {
+    title: title,
+    switchReferenceItems: switchReferenceItems,
+    switchNavItems: switchNavItems
+  };
+
+})(Lungo);
+
+/**
+ * Initialize the <articles> layout of a certain <section>
+ *
+ * @namespace Lungo.View
+ * @class Aside
+ *
+ * @author Javier Jimenez Villar <javi@tapquo.com> || @soyjavi
+ */
+
+Lungo.View.Aside = (function(lng, undefined) {
+
+  var ELEMENT = lng.Constants.ELEMENT;
+  var CLASS = lng.Constants.CLASS;
+  var ATTRIBUTE = lng.Constants.ATTRIBUTE;
+
+  /**
+   * Toggle an aside element
+   *
+   * @method toggle
+   *
+   * @param  {string} Aside id
+   */
+  var toggle = function(aside_id) {
+      aside = _findAside(aside_id);
+      if (aside) {
+        var is_visible = aside.hasClass(CLASS.SHOW);
+        if (is_visible) {
+          lng.View.Aside.hide();
+        } else {
+          lng.View.Aside.show(aside);
+        }
+      }
+      aside = null;
+    };
+
+  /**
+   * Display an aside element with a particular <section>
+   *
+   * @method show
+   *
+   * @param  {string} Aside id
+   */
+  var show = function(aside) {
+      if (lng.Core.toType(aside) == 'string') aside = _findAside(lng.Core.parseUrl(aside));
+      if (aside) {
+        lng.Element.Cache.aside = aside;
+        var aside_stylesheet = _asideStylesheet(aside);
+
+        aside.addClass(CLASS.SHOW);
+        lng.Element.Cache.section.addClass(aside_stylesheet).addClass(CLASS.ASIDE);
+      }
+
+      aside = null;
+    };
+
+  /**
+   * Hide an aside element with a particular section
+   *
+   * @method hide
+   */
+  var hide = function(target) {
+      var aside = lng.Element.Cache.aside || target;
+      if (aside) {
+        lng.Element.Cache.section.removeClass(CLASS.ASIDE).removeClass(CLASS.RIGHT).removeClass(CLASS.SMALL);
+
+        var aside_stylesheet = _asideStylesheet(aside);
+        if (aside_stylesheet) {
+          lng.Element.Cache.section.removeClass(aside_stylesheet);
+        }
+
+        setTimeout(function() {
+          aside.removeClass(CLASS.SHOW);
+          lng.Element.Cache.aside = null;
+        }, 350);
+      }
+    };
+
+  var suscribeEvents = function(hrefs) {
+      var MIN_XDIFF = parseInt(document.body.getBoundingClientRect().width / 3, 10);
+      hrefs.each(function() {
+        var STARTED = false;
+        var a = lng.dom(this);
+        var section = a.closest("section");
+        var aside = lng.dom(a.attr("href"));
+
+        section.swiping(function(gesture) {
+          if (!section.hasClass("aside")) {
+            var xdiff = gesture.currentTouch.x - gesture.iniTouch.x;
+            var ydiff = Math.abs(gesture.currentTouch.y - gesture.iniTouch.y);
+            STARTED = STARTED ? true : xdiff > 3 * ydiff && xdiff < 50;
+            if (STARTED) {
+              xdiff = xdiff > 256 ? 256 : xdiff < 0 ? 0 : xdiff;
+              aside.addClass(CLASS.SHOW);
+              section.vendor('transform', 'translateX(' + xdiff + 'px)');
+              section.vendor('transition-duration', '0s');
+            } else {
+              section.attr('style', '');
+            }
+          }
+        });
+
+        section.swipe(function(gesture) {
+          var diff = gesture.currentTouch.x - gesture.iniTouch.x;
+          var ydiff = Math.abs(gesture.currentTouch.y - gesture.iniTouch.y);
+          section.attr('style', '');
+          if (diff > MIN_XDIFF && STARTED) show(aside);
+          else hide(aside);
+          STARTED = false;
+        });
+      });
+    };
+
+  var _findAside = function(aside_id) {
+      var aside = null;
+      var asides = lng.dom(ELEMENT.ASIDE);
+
+      if (asides.length == 1) {
+        var current_id = '#' + asides[0].id;
+        if (current_id == aside_id) {
+          aside = lng.dom(asides[0]);
+        }
+      } else if (asides.length > 1) {
+        aside = asides.siblings(ELEMENT.ASIDE + aside_id);
+      }
+
+      return aside;
+    };
+
+  var _asideStylesheet = function(aside) {
+      var aside_stylesheet = aside.attr(ATTRIBUTE.CLASS);
+      var classes = '';
+
+      //@todo: Refactor
+      if (aside_stylesheet) {
+        classes += (aside_stylesheet.indexOf(CLASS.RIGHT) > -1) ? CLASS.RIGHT + ' ' : '';
+        classes += (aside_stylesheet.indexOf(CLASS.SMALL) > -1) ? CLASS.SMALL + ' ' : '';
+      }
+
+      return classes;
+    };
+
+  return {
+    suscribeEvents: suscribeEvents,
+    toggle: toggle,
+    show: show,
+    hide: hide
+  };
+
+})(Lungo);

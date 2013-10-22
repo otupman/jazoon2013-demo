@@ -20,9 +20,9 @@ module.exports = function(grunt) {
           archive: 'app.zip',
           mode: 'zip'
         },
-        files: [  
+        files: [
           {
-            src: ["index.html", "config.xml", "components/**/*.*", "partials/*.html", "js/**/*.js"],
+            src: ["index.html", "Config.xml", "components/**/*.*", "partials/*.html", "js/**/*.js"],
             filter: 'isFile'
           }
         ]
@@ -37,7 +37,7 @@ module.exports = function(grunt) {
     },
     karma: {
       e2e: {
-        configFile: 'config/karma-e2e.config.js'
+        configFile: 'config/karma-e2e.conf.js'
       }
     }
   });
