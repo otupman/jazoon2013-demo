@@ -10,19 +10,17 @@
 
 *   Clone [this repository](https://github.com/otupman/jazoon2013-demo).
     > git clone git@github.com:otupman/jazoon2013-demo.git   
-
+    
 *  Start a simple web server from the directory
     > python -m SimpleHTTPServer # If you've python
 
     > grunt serve # if you've node (and grunt)
-    
 * Go hit localhost:port (node is port 3000, python is 8000)
 
 #### DIY Start
 
 *   Visit
     > https://github.com/centralway/grunt-init-lungo-angular
-
 *   Follow the instructions there (you'll get node, npm, grunt, etc.)
 
 ### Code overview
