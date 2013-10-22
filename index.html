@@ -36,7 +36,10 @@
                 <p>Available: {{todos.length}}</p>
                 <ul>
                     <!-- ng-repeat repeats through an array; todo will represent each element of the array -->
-                    <li ng-repeat="todo in todos" class="arrow selectable"><a href="#/todo/view/{{todo.id}}">{{todo.text}}</a></li>
+                  <a href="#/todo/view/{{todo.id}}" ng-repeat="todo in todos" class="arrow selectable">
+                    <li style="height: 80px">
+                      {{todo.text}}
+                    </li></a>
                     <li ng-hide="isLoading" class="theme">
                       <a href="#/add" data-icon="plus">Add a todo</a>
                     </li>
